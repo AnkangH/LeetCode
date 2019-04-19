@@ -1,0 +1,62 @@
+class Solution {
+public:
+    bool canPlaceFlowers(vector<int>& flowerbed, int n) {
+        int size=flowerbed.size();
+        if(size==0)
+        {
+            if(n==0)
+                return true;
+            else
+                return false;
+            
+        }
+        if(size==1)
+        {
+            if(flowerbed[0]==0)
+            {
+                if(n<=1)
+                    return true;
+                else
+                    return false;
+            }
+            if(flowerbed[0]==1)
+            {
+                if(n==0)
+                    return true;
+                else
+                    return false;
+            }
+        }     
+        int res=0;
+        if(flowerbed[0]==0&&flowerbed[1]==0)
+        {
+            flowerbed[0]=1;
+            res++;
+        }
+        if(flowerbed[size-2]==0&&flowerbed[size-1]==0)
+        {
+            flowerbed[size-1]=1;
+            res++;
+        }
+        for(int i=1;i<size-1;i++)
+        {
+            if(flowerbed[i-1]==0&&flowerbed[i]==0&&flowerbed[i+1]==0)
+            {
+                flowerbed[i]=1;
+                res++;
+            }
+        }
+        if(n<=res)
+            return true;
+        else
+            return false;
+    }
+};
+/*注意
+1.当土地数目为0,1时单独判断
+2.n<=空的土地,true；n>空的土地，false
+3.边界条件，前两个和最后两个的判断方式与剩余的不同，
+前两个和最后两个只要为空就可以种一棵树，而剩余的第i棵树要求i-1空，i+1空
+方法是先判断前两个和最后两个，并相应地把第一个土地和最后一个土地种上树。
+再判断剩余的位置。
+*/
