@@ -1,0 +1,28 @@
+class Solution {
+public:
+    static bool cmp1(pair<int,int> a,pair<int,int> b)
+    {
+        return a.first<b.first;
+    }
+    int findMinArrowShots(vector<pair<int, int>>& points) {
+        if(points.size()==0)
+            return 0;
+        int size=points.size();
+        sort(points.begin(),points.end(),cmp1);
+        int res=1;
+        int left,right;
+        right=points[0].second;
+        for(int i=1;i<size;i++)
+        {
+            if(points[i].first<=right)
+            {
+                right=min(right,points[i].second);
+                continue;
+            }
+            right=points[i].second;
+            res++;
+        }
+        return res;
+    }
+    
+};
