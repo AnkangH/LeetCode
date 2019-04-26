@@ -22,7 +22,7 @@ public:
 	int c = 0;
 	int temp=0;
 	int sizea = a.size()-1;
-	int sizeb = b.size()-1;
+	int sizeb = b.size()-1;//
 	if (sizea <= sizeb)
 	    {
 		    while (sizeb > -1)//加到string[0]为止，所以终止条件为大数组的索引到0
