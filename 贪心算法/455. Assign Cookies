@@ -1,0 +1,58 @@
+/*
+题目：
+Assume you are an awesome parent and want to give your children some cookies. 
+But, you should give each child at most one cookie. Each child i has a greed factor gi,
+which is the minimum size of a cookie that the child will be content with; and each cookie j has a size sj. 
+If sj >= gi, we can assign the cookie j to the child i, and the child i will be content. 
+Your goal is to maximize the number of your content children and output the maximum number.
+Note:
+You may assume the greed factor is always positive. 
+You cannot assign more than one cookie to one child.
+Example 1:
+Input: [1,2,3], [1,1]
+Output: 1
+Explanation: You have 3 children and 2 cookies. The greed factors of 3 children are 1, 2, 3. 
+And even though you have 2 cookies, since their size is both 1, you could only make the child whose greed factor is 1 content.
+You need to output 1.
+Example 2:
+Input: [1,2], [1,2,3]
+Output: 2
+Explanation: You have 2 children and 3 cookies. The greed factors of 2 children are 1, 2. 
+You have 3 cookies and their sizes are big enough to gratify all of the children, 
+You need to output 2.
+解析:
+目标是使每个饼干分配给孩子的差值s[i]-g[i]最小，这样才能满足最多的孩子。
+如饼干5 6，孩子胃口3，6，那么将饼干(5)分给孩子(3),将饼干(6)分给孩子(6)。
+这里借用排序来使差值最小。
+将胃口从小到大排序，将饼干从小到大排序。
+两个标志，一个标志饼干索引，一个标志胃口索引。遍历饼干，如果饼干大于等于胃口,胃口索引+1。
+需注意循环要有两个终止条件，分别是胃口数组和饼干数组的个数，因为考虑到数组个数不同时会出
+错。
+另外，一个非常重要的点，函数中的变量如果不初始化，那么其值是其储存地址的当前值，也就是未知
+的。
+*/
+class Solution {
+public:
+    int findContentChildren(vector<int>& g, vector<int>& s) {
+        sort(g.begin(),g.end());//胃口 从小到大 g排序
+        sort(s.begin(),s.end());//饼干 从小到大 s排序
+        int ssize=s.size();//这里最好将size()的返回值由uint转为int，防止超索引时segment fault
+        int gsize=g.size();
+        int i=0,j=0;//索引标志，i为s饼干，j为g胃口。一定注意初始化为0，否则结果是错误的
+        for(i,j;i<ssize&&j<gsize;i++)//无论当前饼干是否满足胃口，饼干索引都+1,且循环终止条件有两个
+        {
+            if(s[i]>=g[j])
+                j++;//若饼干满足，则胃口+1
+        }
+        return j;
+        /*
+        //这两个循环同理，都是i递增，j满足才递增，循环终止条件为任一数组索引到达终点
+        while(i<ssize&&j<gsize)
+        {
+            if(s[i]>=g[j])
+                j++;
+            i++;
+        }
+        return j;*/
+    }
+};
