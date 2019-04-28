@@ -1,0 +1,40 @@
+/*
+题目：
+Given a string s and a string t, check if s is subsequence of t.
+You may assume that there is only lower case English letters in both s and t. 
+t is potentially a very long (length ~= 500,000) string, and s is a short string (<=100).
+A subsequence of a string is a new string which is formed from the original string by deleting some (can be none) 
+of the characters without disturbing the relative positions of the remaining characters. 
+(ie, "ace" is a subsequence of "abcde" while "aec" is not).
+Example 1:
+s = "abc", t = "ahbgdc"
+Return true.
+Example 2:
+s = "axc", t = "ahbgdc"
+Return false.
+翻译：判断两个字符串 s是否是t的子串，要求s中字符的相对顺序和t中的相对顺序相同。
+解析：
+这里只要对t进行遍历，如果有和s中相同的，标志位+1,若s中全部和t中相同，则为子串，因为是对t遍历，
+所以本身字符是有相对顺序的
+*/
+class Solution {
+public:
+    bool isSubsequence(string s, string t) {
+        if(s.empty())
+            return true;//s为空时，t空或非空，均为子串
+        int sizes=s.size();
+        int sizet=t.size();
+        if(sizes>sizet)
+            return false;//s长度大于t，非子串
+        int i=0,j=0;
+        for(i,j;i<sizes&&j<sizet;j++)
+        {
+            if(t[j]==s[i])
+                i++;
+        }
+        if(i==sizes)//上面循环完成后，若为子串，i=sizes-1(相同字符数目)+1(循环退出条件),所以判断i的值即可。
+            return true;
+        else
+            return false;
+    }
+};
