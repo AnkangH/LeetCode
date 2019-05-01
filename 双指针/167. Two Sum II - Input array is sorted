@@ -1,0 +1,40 @@
+/*
+题目：
+Given an array of integers that is already sorted in ascending order, find two numbers such that they add up to a specific target number.
+The function twoSum should return indices of the two numbers such that they add up to the target, where index1 must be less than index2.
+Note:
+Your returned answers (both index1 and index2) are not zero-based.
+You may assume that each input would have exactly one solution and you may not use the same element twice.
+Example:
+Input: numbers = [2,7,11,15], target = 9
+Output: [1,2]
+Explanation: The sum of 2 and 7 is 9. Therefore index1 = 1, index2 = 2.
+给定一个非减排序数组，从中找出两个数字，使其和为目标值
+这里设定了一个数组有且仅有一个正确解。
+所以使用两个索引，start指向0，end指向size-1，求和num
+若num>target 则end减小左移
+若num<target 则start增大右移
+返回值是起始值为1，因此索引均+1
+*/
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& numbers, int target) {
+        if(numbers.empty())
+            return numbers;
+        int size=numbers.size();
+        int start=0,end=size-1;//start指向数组首，即最小值；end指向数组尾，即最大值
+        while(start<end)
+        {
+            if(numbers[start]+numbers[end]<target)
+                start++;//和小，start右移增大和
+            else if(numbers[start]+numbers[end]>target)
+                end--;//和大，end左移减小和
+            else
+                break;
+        }
+        vector<int> res;
+        res.push_back(start+1);//从1开始，索引+1
+        res.push_back(end+1);
+        return res;
+    }
+};
