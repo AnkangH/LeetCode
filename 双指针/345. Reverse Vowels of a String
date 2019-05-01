@@ -1,0 +1,50 @@
+/*
+题目：
+Write a function that takes a string as input and reverse only the vowels of a string.
+Example 1:
+Input: "hello"
+Output: "holle"
+Example 2:
+Input: "leetcode"
+Output: "leotcede"
+Note:
+The vowels does not include the letter "y".
+解析:
+两个变量分别指向字符串头和尾，先从头开始找元音，找到再从尾开始找元音(或者先尾后头)，找到交换，
+交换后，元音索引需指向下一个，如start++,end--。
+*/
+class Solution {
+    bool isVowels(char c)
+    {
+        if(c=='a'||c=='e'||c=='i'||c=='o'||c=='u'||c=='A'||
+          c=='E'||c=='I'||c=='O'||c=='U')//注意元音字母有大小写之分，第一次submit未通过因为没有考虑大写元音字母的情况
+            return true;
+        else
+            return false;
+    }
+public:
+    string reverseVowels(string s) {
+        if(s.empty())
+           return s;
+        int size=s.size();
+        int start=0,end=size-1;//start指向字符串头，从前向后；end指向字符串尾，从后向前
+        string res=s;
+        while(start<end)
+        {
+            if(isVowels(res[start]))//先找前面的元音字符，找到了再去找后面的
+            {
+                if(isVowels(res[end]))//找到后面的元音字符
+                {
+                    char temp=res[start];
+                    res[start]=res[end];
+                    res[end]=temp;//交换
+                    start++;//前面索引指向下一个
+                }
+                end--;//后面索引指向下一个，这里不管找没找到后面的元音字符，end都要向前移动，所以不需要在if和else里都写end--。
+            }
+            else
+                start++;
+        }
+        return res;
+    }
+};
