@@ -1,0 +1,32 @@
+/*
+题目：
+Given a non-negative integer c, your task is to decide whether there're two integers a and b such that a2 + b2 = c.
+Example 1:
+Input: 5
+Output: True
+Explanation: 1 * 1 + 2 * 2 = 5
+Example 2:
+Input: 3
+Output: False
+解析：
+给定一个非负数，判断是否有两个数的平方和等于它。
+首先开方c，start=0，end=c^-2，判断和的大小，和大，end--，和小，start++
+循环结束条件while(start<=end)
+*/
+class Solution {
+public:
+    bool judgeSquareSum(int c) {
+        long start=0;//start要从0开始，4=0^2+2^2
+        long end=sqrt(c);//start和end都要至少是long，否则提交报错超范围
+        while(start<=end)//'='是必须的，考虑8=2^2+2^2
+        {
+            if(start*start+end*end>c)
+                end--;//和大于c，end--使和减小
+            else if(start*start+end*end<c)
+                start++;//和小于c，start++使和增大
+            else
+                return true;//如果相等，则返回true
+        }
+        return false;//否则返回false
+    }
+};
