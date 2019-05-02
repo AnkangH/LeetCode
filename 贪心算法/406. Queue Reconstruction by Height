@@ -1,0 +1,53 @@
+/*
+题目：
+Suppose you have a random list of people standing in a queue. 
+Each person is described by a pair of integers (h, k), where h is the height of the person and k is 
+the number of people in front of this person who have a height greater than or equal to h. 
+Write an algorithm to reconstruct the queue.
+Note:
+The number of people is less than 1,100.
+Example
+Input:
+[[7,0], [4,4], [7,1], [5,0], [6,1], [5,2]]
+Output:
+[[5,0], [7,0], [5,2], [6,1], [4,4], [7,1]]
+解析：
+输入一个二维序列，第一维是身高，第二维是在重建序列中的位置，指代前面有几个身高大于等于自己的
+因此可知，身高大的在前，索引小的在前
+首先将输入序列按照优先身高降序，其次索引升序的方式排序
+再按照每个数据的k值向重构序列中插入即可保证重构序列的正确性
+输入：
+[7,0], [4,4], [7,1], [5,0], [6,1], [5,2]
+排序后：
+[7,0], [7,1], [6,1], [5,0], [5,2], [4,4]
+安装排序后的顺序依次插入，插入位置为起始位置+k值
+重构序列插入[7,0]：
+[7,0]
+重构序列插入[7,1]：
+[7,0], [7,1]
+重构序列插入[6,1]：
+[7,0], [6,1], [7,1]//由此可知，保证每次插入位置均为begin()+k即可，因为排序时以及保证了身高降序和k值升序
+重构序列插入[5,0]：
+[5,0], [7,0], [6,1], [7,1]
+...
+注意：因为使用了sort()排序，所以这种方法的时间复杂度不低
+*/
+class Solution {
+    static bool cmp(vector<int> a,vector<int> b)//这里需要static修饰，涉及类中共有私有函数的调用
+    {
+        if(a[0]==b[0])
+            return a[1]<b[1];//身高相等时，K值升序
+        return a[0]>b[0];//身高降序
+    }
+    public:
+    vector<vector<int>> reconstructQueue(vector<vector<int>>& people) {
+        if(people.empty()||people[0].empty())
+            return people;//检测输入合法性
+        sort(people.begin(),people.end(),cmp);//排序
+        vector<vector<int>> res;
+        int size=people.size();
+        for(int i=0;i<size;i++)
+            res.insert(res.begin()+people[i][1],people[i]);//按照k值向重构数组中插入，即可保证顺序。
+        return res;
+    }
+};
