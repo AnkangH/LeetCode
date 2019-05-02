@@ -1,0 +1,74 @@
+/*
+题目：
+Given a string and a string dictionary, find the longest string in the dictionary that can be formed by deleting some 
+characters of the given string. If there are more than one possible results, return the longest word with the smallest
+lexicographical order. If there is no possible result, return the empty string.
+Example 1:
+Input:
+s = "abpcplea", d = ["ale","apple","monkey","plea"]
+Output: 
+"apple"
+Example 2:
+Input:
+s = "abpcplea", d = ["a","b","c"]
+Output: 
+"a"
+Note:
+All the strings in the input will only contain lower-case letters.
+The size of the dictionary won't exceed 1,000.
+The length of all the strings in the input won't exceed 1,000.
+解析：
+判断字典每个字符串d[i]是否是s的相对子字符串（即删除某些字符），然后从所有的子字符串中返回
+长度最长(优先级1)，和字母顺序最小（优先级2）的字典。
+1.子字符串。双指针法判断是否是子字符串
+2.长度最长问题这里字符串长度可以由一个变量x记录在满足子字符串条件的字典在字典中索引，然后
+每次比较其长度，如果只记录长度的话是不行的，还需要一个变量来记录索引，所以综上只用一个变量
+记录索引。
+3.最小字母顺序，即"ab">"ba"，首字母的字母顺序越小越好。这里这个条件出题有问题，实际上应该是判
+断每个字符的字母顺序，如"aab">"aac"，而在编程中只判断第一个字符即可AC.而且因为这里给出了字典，
+所以最小字典顺序也不应该是字母排序，而应该是长度相等且满足子字符串条件的字典在字典中的先后顺序。
+*/
+class Solution {
+public:
+    string findLongestWord(string s, vector<string>& d) {
+        if(s.empty())
+            return s;//判断s是否空
+        int size=d.size();
+        int m=s.size();//s的固定上限
+        int x=-1;//初始值最好设置为非索引值，如果初始值为0，无法判断是否有子串，还需再判断d[0]
+        for(int i=0;i<size;i++)
+        {
+            if(isSubString(s,d[i]))//如果是子串
+            {
+                if(x==-1)
+                    x=i;//初始赋值，不需比较
+                else if(d[i].size()>d[x].size())//字符长度长，修改x
+                    x=i;
+                else if(d[i].size()==d[x].size()&&d[i][0]<d[x][0])//或者字符长度相等但首字母靠前，修改x
+                    x=i;
+            }
+        }
+        if(x!=-1)
+            return d[x];//这里照应上面为什么要设置x=-1而不是0.
+        else
+            return "";//这里不能返回NULL，而是空字符串""
+    }
+    bool isSubString(string a,string b)//子函数，判断b是否是a的相对子字符串，双指针法
+    {
+        int sizea=a.size();
+        int sizeb=b.size();
+        if(sizea<sizeb)
+            return false;
+        int i=0,j=0;
+        while(i<sizea&&j<sizeb)
+        {
+            if(a[i]==b[j])
+                j++;
+            i++;
+        }
+        if(j==sizeb)
+            return true;
+        else
+            return false;
+    }
+};
