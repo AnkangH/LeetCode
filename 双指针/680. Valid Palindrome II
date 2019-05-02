@@ -10,8 +10,51 @@ Output: True
 Explanation: You could delete the character 'c'.
 Note:
 The string will only contain lowercase characters a-z. The maximum length of the string is 50000.
+解析：
+回文：从左向右读和从右向左读，相同。如aba
+这里使用双指针，同时从首尾相向出发，同时增减。
+难点在于可修改一次，之前的错误想法是，当检测到s[l]!=s[r]时，检测s[l] s[l+1]与s[r] s[r-1]之间是否有相等
+的，如s[l]!=s[r],s[l]==s[r-1],则删去s[r]，检索剩下的部分。但是在case中发现，会有s[l]!=s[r]&&s[l]==s[r-1]&&
+s[l+1]==s[r]的情况存在，这是不能仅通过下一个字符判断，而是应该对剩下的字符全部判断。即判断s[l+1,r]是否为回文，
+s[l,r-1]是否为回文。
+以下是正确代码：
 */
+class Solution {
+public:
+    bool validPalindrome(string s) {
+        if(s.empty())
+            return true;//检测空字符串
+        int size=s.size();
+        if(size==1)
+            return true;//只有一个字符时，必为回文
+        int l=0,r=size-1;//双指针
+        while(l<r)
+        {
+            if(s[l]!=s[r])
+                return isPalindrome(s,l+1,r)||isPalindrome(s,l,r-1);//检测到不满足回文条件，分别检测删去首尾之后的
+                //子字符串是否为回文，如果有一个是即可
+            l++;
+            r--;
+        }
+        return true;//若上述循环未返回false，则返回true
+    }
+    bool isPalindrome(string s,int l,int r)//子函数，判断规定长度的字符串是否为回文
+    {
+        while(l<r)
+        {
+            if(s[l]!=s[r])
+                return false;
+            l++;
+            r--;
+        }
+        return true;
+    }
+};
 /*
+以下是错误代码。
+这是错误解答，解答错在无法判断如何修改。
+例如"ebcbbececabbacecbbcbe" 当检索到"ececabbacec"时，删除第一个和删除最后一个都满足使下一次的字符相同，但是之后的不能保证。
+所以是当检测到s[l]!=s[r]后，对分别删除首尾后的两个子字符串s(l+1,r)和s(l,r-1)进行检测，有一个是回文字符串即可。
 class Solution {
 public:
     bool validPalindrome(string s) {
@@ -41,6 +84,4 @@ public:
             return false;
     }
 };
-这是错误解答，解答错在无法判断如何修改，
-例如"ebcbbececabbacecbbcbe" 当检索到"ececabbacec"时，两个条件均满足，但是只有一种方法有效，除非遍历剩余的全部不能判断
 */
