@@ -1,0 +1,54 @@
+/*
+题目：
+Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+An input string is valid if:
+Open brackets must be closed by the same type of brackets.
+Open brackets must be closed in the correct order.
+Note that an empty string is also considered valid.
+Example 1:
+Input: "()"
+Output: true
+Example 2:
+Input: "()[]{}"
+Output: true
+Example 3:
+Input: "(]"
+Output: false
+Example 4:
+Input: "([)]"
+Output: false
+Example 5:
+Input: "{[]}"
+Output: true
+解析：
+判断s中的字符，如果是左括号'(','[','{'就入栈，如果是右括号')',']','}'就判断是否与栈顶元素相同，
+相同则栈顶出栈，否则返回false。最后判断栈是否为空即可。如果所有的括号都匹配，那么最后栈空。这里
+使用栈是为了LIFO特性，从而判断括号的匹配。
+*/
+class Solution {
+public:
+    bool isValid(string s) {
+        if(s.empty())
+            return true;//空字符串返回正确
+        int size=s.size();
+        stack<char> st;
+        for(int i=0;i<size;i++)
+        {
+            if(s[i]=='('||s[i]=='{'||s[i]=='[')
+                st.push(s[i]);//左括号入栈
+            else
+            {
+               if(st.empty())
+                   return false;//如果第一个字符不为左括号其中一个，必不匹配。
+                if(s[i]==')'&&st.top()!='(')
+                    return false;//判断()匹配
+                if(s[i]==']'&&st.top()!='[')
+                    return false;//判断[]匹配
+                if(s[i]=='}'&&st.top()!='{')
+                    return false;//判断{}匹配
+                st.pop();//如果匹配成功，st.pop(),将栈顶的左括号出栈，准备下一次匹配判断。
+            }
+        }
+        return st.empty();//判断栈空
+    }
+};
