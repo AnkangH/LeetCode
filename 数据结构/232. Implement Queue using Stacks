@@ -1,0 +1,79 @@
+/*
+题目：
+Implement the following operations of a queue using stacks.
+push(x) -- Push element x to the back of queue.
+pop() -- Removes the element from in front of queue.
+peek() -- Get the front element.
+empty() -- Return whether the queue is empty.
+Example:
+MyQueue queue = new MyQueue();
+queue.push(1);
+queue.push(2);  
+queue.peek();  // returns 1
+queue.pop();   // returns 1
+queue.empty(); // returns false
+Notes:
+You must use only standard operations of a stack -- which means only push to top, peek/pop from top, size,
+and is empty operations are valid.Depending on your language, stack may not be supported natively. You may
+simulate a stack by using a list or deque (double-ended queue), as long as you use only standard operations of a stack.
+You may assume that all operations are valid (for example, no pop or peek operations will be called on an empty queue).
+解析：
+使用栈来完成队列。栈：LastInFirstOut,后入先出。而队列：FirstInFirstOut，先入先出。
+这里使用两个栈，因为两次后入先出，等于先入先出
+   4        1         1 2 3 4
+   3        2           
+   2        3
+   1        4
+  stack1   stack2     queue    
+  stack1作为队列的入队列序列，所有的输入都依次push进stack1。
+  pop()函数中，stack1中所有元素出栈，并push进stack2，这样stack2中储存了队列的出栈序列。
+  这里应该注意，只有在pop（）函数中才能将入队列序列依次放入出队列序列。而不能对每一个入队列元素操作，
+  否则无法保存入队列的顺序。其次，只有当s2为空时，才将s1中的元素放入s2，否则直接将s2的top()元素返回。
+  peek()与pop()完成相似工作，因为这里规定pop()有返回值。
+*/
+class MyQueue {
+       stack<int> s1,s2;
+public:
+    /** Initialize your data structure here. */
+    MyQueue() {
+    }
+    
+    /** Push element x to the back of queue. */
+    void push(int x) {
+        s1.push(x);
+    }
+    
+    /** Removes the element from in front of queue and returns that element. */
+    int pop() {
+        int x=peek();
+        s2.pop();
+        return x;
+    }
+    
+    /** Get the front element. */
+    int peek() {
+       if(s2.empty())
+      {
+          while(!s1.empty())
+          {
+              s2.push(s1.top());
+              s1.pop();
+          }
+      }
+        return s2.top();
+    }
+    
+    /** Returns whether the queue is empty. */
+    bool empty() {
+        return s1.empty()&&s2.empty();
+    }
+};
+
+/**
+ * Your MyQueue object will be instantiated and called as such:
+ * MyQueue* obj = new MyQueue();
+ * obj->push(x);
+ * int param_2 = obj->pop();
+ * int param_3 = obj->peek();
+ * bool param_4 = obj->empty();
+ */
