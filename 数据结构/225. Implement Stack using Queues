@@ -1,0 +1,77 @@
+/*
+题目：
+Implement the following operations of a stack using queues.
+push(x) -- Push element x onto stack.
+pop() -- Removes the element on top of the stack.
+top() -- Get the top element.
+empty() -- Return whether the stack is empty.
+Example:
+MyStack stack = new MyStack();
+stack.push(1);
+stack.push(2);  
+stack.top();   // returns 2
+stack.pop();   // returns 2
+stack.empty(); // returns false
+Notes:
+You must use only standard operations of a queue -- which means only push to back, peek/pop from front, size, 
+and is empty operations are valid.Depending on your language, queue may not be supported natively. You may simulate 
+a queue by using a list or deque (double-ended queue), as long as you use only standard operations of a queue.
+You may assume that all operations are valid (for example, no pop or top operations will be called on an empty stack).
+解析：
+用一个队列实现栈。同样要把FIFO变为LIFO。区别在于，要在push阶段改变顺序。用一个队列，保存出栈顺序。
+空时： 入栈 1  出栈 1
+push1次：  入栈 1 2  出栈 2 1
+push2次：  入栈 2 1 3  出栈 3 2 1
+push3次： 入栈 3 2 1 4 出栈 4 3 2 1
+可见从栈空开始，将最后push进的元素之前的所有元素，按照front顺序重新push进队列，同时删除front即可。
+因为队列中保存的是出栈顺序，所以只需pop出front元素即是栈的出栈顺序。
+
+这里可见用栈实现队列和用队列实现栈的区别。
+队列，先入先出，所以可以操作队列中的顺序。
+而栈后入先出，不能只对一个栈操作而改变相对顺序。所以要使用辅助栈。
+*/
+class MyStack {
+    queue<int> q;
+public:
+    /** Initialize your data structure here. */
+    MyStack() {
+        
+    }
+    
+    /** Push element x onto stack. */
+    void push(int x) {
+        q.push(x);//新入栈放到队列尾
+        int size=q.size();
+        for(int i=0;i<size-1;i++)
+        {
+            q.push(q.front());//除新入队列元素外，其他相对位置不变放到新入队列元素之后
+            q.pop();
+        }
+    }
+    
+    /** Removes the element on top of the stack and returns that element. */
+    int pop() {
+        int x=q.front();
+        q.pop();
+        return x;
+    }
+    
+    /** Get the top element. */
+    int top() {
+        return q.front();
+    }
+    
+    /** Returns whether the stack is empty. */
+    bool empty() {
+        return q.empty();
+    }
+};
+
+/**
+ * Your MyStack object will be instantiated and called as such:
+ * MyStack* obj = new MyStack();
+ * obj->push(x);
+ * int param_2 = obj->pop();
+ * int param_3 = obj->top();
+ * bool param_4 = obj->empty();
+ */
