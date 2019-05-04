@@ -1,0 +1,70 @@
+/*
+题目：
+Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+push(x) -- Push element x onto stack.
+pop() -- Removes the element on top of the stack.
+top() -- Get the top element.
+getMin() -- Retrieve the minimum element in the stack.
+Example:
+MinStack minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+minStack.getMin();   --> Returns -3.
+minStack.pop();
+minStack.top();      --> Returns 0.
+minStack.getMin();   --> Returns -2.
+解析：
+设计一个最小值栈，即满足栈的先入后出，又能记录栈中剩余元素的最小值。
+使用两个栈来实现，一个标准栈s的入栈顺序，一个最小值栈min记录剩余元素的最小值。
+注意：出栈时，s必定出栈，但是要检查s的top()元素是否与min的top()元素相等，若相等，min也要出栈。
+另外，注意等号时，最小值栈也要入栈。
+  2    
+  2   2                 2    
+  3   3                 3   3
+  s  min  s.pop()  ->   s   min   
+  如果等号不入最小值栈，那么s.pop()时，因为栈顶相等，所有min也需要pop()，此时s中最小值仍为2，但是
+  min栈中的最小值确为3.
+*/
+class MinStack {
+    stack<int> s,min;//s标准栈，实现push，pop；min最小值栈，栈顶元素记录当前s中的最小值。
+public:
+    /** initialize your data structure here. */
+    MinStack() {
+    }
+    
+    void push(int x) {
+        s.push(x);//s标准操作
+        if(min.empty())
+            min.push(x);//若min空，不需比较，直接入栈
+        else if(min.top()>=x)//若min栈顶大于等于入标准栈元素，min也入栈
+            min.push(x);
+    }
+    
+    void pop() {
+        if(s.top()==min.top())//检查s栈顶是否与min栈顶相等
+        {
+            s.pop();
+            min.pop();//若相等，s，min都pop
+        }
+        else
+            s.pop();//否则spop
+    }
+    
+    int top() {
+        return s.top();
+    }
+    
+    int getMin() {
+        return min.top();//min栈顶元素记录当前s栈中最小值
+    }
+};
+
+/**
+ * Your MinStack object will be instantiated and called as such:
+ * MinStack* obj = new MinStack();
+ * obj->push(x);
+ * obj->pop();
+ * int param_3 = obj->top();
+ * int param_4 = obj->getMin();
+ */
