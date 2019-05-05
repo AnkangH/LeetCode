@@ -7,6 +7,9 @@ For example, given the list of temperatures T = [73, 74, 75, 71, 69, 72, 76, 73]
 Note: The length of temperatures will be in the range [1, 30000]. Each temperature will be an integer in the range [30, 100].
 解析：
 给定一个数组t，对于每一个元素t[i]，寻找索引j大于i的最小j，使得t[j]>t[i]
+这里不能for(int i;i<size;i++)
+           for(int j=i+1;j<size;j++)
+当数组元素全部相等时，时间复杂度O（n*n）太大。
 核心思想，使用一个辅助栈，遍历数组元素并把索引i入栈，当j入栈时，若t[j]>t[i],则i的最近更大元素为t[j]
 所以栈中的保存的是比较大的元素的索引，若遍历完数组，栈非空，说明栈中的元素在数组中，其后没有更大元素，
 此时设0即可。即栈中保存的是未发现其后大于其的元素，同时因为栈的LIFO特性，使得从栈顶开始可以判断从后往前
