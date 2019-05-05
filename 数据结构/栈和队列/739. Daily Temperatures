@@ -1,0 +1,51 @@
+/*
+题目：
+Given a list of daily temperatures T, return a list such that, for each day in the input, 
+tells you how many days you would have to wait until a warmer temperature. 
+If there is no future day for which this is possible, put 0 instead.
+For example, given the list of temperatures T = [73, 74, 75, 71, 69, 72, 76, 73], your output should be [1, 1, 4, 2, 1, 1, 0, 0].
+Note: The length of temperatures will be in the range [1, 30000]. Each temperature will be an integer in the range [30, 100].
+解析：
+给定一个数组t，对于每一个元素t[i]，寻找索引j大于i的最小j，使得t[j]>t[i]
+核心思想，使用一个辅助栈，遍历数组元素并把索引i入栈，当j入栈时，若t[j]>t[i],则i的最近更大元素为t[j]
+所以栈中的保存的是比较大的元素的索引，若遍历完数组，栈非空，说明栈中的元素在数组中，其后没有更大元素，
+此时设0即可。即栈中保存的是未发现其后大于其的元素，同时因为栈的LIFO特性，使得从栈顶开始可以判断从后往前
+的顺序。对于每个入栈元素，判断其索引对应的数组元素大小，直到栈中没有小于其的元素或栈空。
+如：[73, 74, 75, 71, 69, 72, 76, 73]  用数字代表索引，（）代表其数值，如0(73)代表第0个数值是73
+round0：0（73）入栈， 
+round1：1（74）入栈，74大于栈顶73，结果中的res[0]=1-0,栈顶0（73）出栈，1（74）入栈
+round2：2（75）入栈，同上，res[1]=2-1=1,1（74）出栈，2（75）入栈
+round3：3（71）入栈，71不大于栈顶75,3（71）入栈
+round4: 4（69）入栈，同理，4（69）入栈
+round5:5（72）入栈，5（72）大于栈顶4（69），res[4]=5-4=1,4（69）出栈，机继续判断是否大于栈顶，5（72）大于3（71）
+        res[3]=5-3=2,3（71）出栈，
+...
+*/
+class Solution {
+public:
+    vector<int> dailyTemperatures(vector<int>& t) {
+        int size=t.size();
+        vector<int> res=t;//这里必须初始化res的数值，否则不能使用索引res[i]访问
+        stack<int> st;//辅助栈，
+        for(int i=0;i<size;i++)
+        {
+            while(!st.empty())
+            {
+                if(t[i]>t[st.top()])//大于栈顶
+                {
+                    res[st.top()]=i-st.top();//结果保存
+                    st.pop();//发现其后第一个大于其的元素后，出栈
+                }
+                else
+                    break;//直到栈空或者入栈元素不大于栈中元素
+            }
+            st.push(i);//注意栈中保存的是数组中的索引，从而能保存顺序
+        }
+        while(!st.empty())
+        {
+            res[st.top()]=0;//栈中剩余元素是按照数组顺序，其后没有大于其的索引，按照题意设为0.或者在res初始化时全部设置初值为0.
+            st.pop();
+        }
+        return res;
+    }
+};
