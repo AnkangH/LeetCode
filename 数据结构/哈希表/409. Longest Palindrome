@@ -1,0 +1,46 @@
+/*
+题目：
+Given a string which consists of lowercase or uppercase letters, find the length of the longest 
+palindromes that can be built with those letters.
+This is case sensitive, for example "Aa" is not considered a palindrome here.
+Note:
+Assume the length of given string will not exceed 1,010.
+Example:
+Input:
+"abccccdd"
+Output:
+7
+Explanation:
+One longest palindrome that can be built is "dccaccd", whose length is 7.
+解析：
+遍历字符串s，保存每个字符出现的次数。因为大小写字符都有，而且大小写字符之间不连续，题目输入仅包含
+大小写字符，因此这里这需要数组的数目>'A'~'z'即可。对于出现次数偶数的字符，全可以放入回文字符串，对
+于出现次数奇数的字符，/2*2之后可以放入回文字符串。同时设置一个flag，判断数组中是否出现了奇数次的字符
+如果有，则最终的数目+1，因为单个字符可以放在回文字符串的最中间。
+*/
+class Solution {
+public:
+    int longestPalindrome(string s) {
+        int a[128]={0};// 'A' 65 ~ 'z' 122 至少需122-65+1=58个变量来储存
+        int size=s.size();
+        for(int i=0;i<size;i++)
+            a[s[i]-'A']++;//遍历s并计算出现次数。
+        int res=0;//回文字符数
+        int flag=0;//是否有字符出现奇数次
+        for(int i=0;i<128;i++)
+        {
+            if(a[i]%2==0)
+                res+=a[i];//出现次数偶数，全部计入回文字符数
+            else
+            {
+                res+=a[i]/2*2;//出现次数奇数，如5，则5/2*2=4计入回文字符
+                if(flag==0)
+                    flag=1;//标记有字符出现奇数次，因为回文字符串仅有一个位置可以放置单个字符，所以flag只区分是否有而不需要每个都标记。
+            }
+        }
+        if(flag)
+            return res+1;//有字符出现奇数次，最终结果+1
+        else
+            return res;
+    }
+};
