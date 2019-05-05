@@ -41,9 +41,9 @@ public:
         for(int i=0;i<size;i++)
         {
             auto x=m.find(target-nums[i]);//在已经创建的表里寻找target-nums[i]，若找到说明和为该两个值
-            if(x!=m.end())
+            if(x!=m.end())//找不到则迭代器指针指向x=m.end()
             {
-                res.push_back(x->second);
+                res.push_back(x->second);//迭代器x有两个成员<first,second>对应<key,value>
                 res.push_back(i);
                 break;
             }
