@@ -1,0 +1,60 @@
+/*
+题目：
+Given two strings s and t , write a function to determine if t is an anagram of s.
+Example 1:
+Input: s = "anagram", t = "nagaram"
+Output: true
+Example 2:
+Input: s = "rat", t = "car"
+Output: false
+Note:
+You may assume the string contains only lowercase alphabets.
+解析：
+给定两个字符串，出现的字符相同并且每个字符的出现次数相同，则认为是相同字符串。
+使用一个哈希表，第一次遍历S，记录每个字符出现次数，第二次遍历t，减去每个字符出现次数。
+若最后哈希表每个key的value均为0，则说明两个字符串相同。
+*/
+//方法一 stl unordered_map 时间复杂度高
+class Solution {
+public:
+    bool isAnagram(string s, string t) {
+        int sizes=s.size();
+        int sizet=t.size();
+        if(sizes!=sizet)
+            return false;
+        unordered_map<char,int> m;//字符为key，出现次数为value
+        for(int i=0;i<sizes;i++)
+            m.emplace(s[i],0);//初始化哈希表
+        for(int i=0;i<sizes;i++)
+            m.at(s[i])++;//构建哈希表
+        for(int i=0;i<sizes;i++)
+        {
+            if(m.count(t[i])!=1)
+                return false;//这里要判断当两个字符串中字符不相同时，如"a"和"b"
+            m.at(t[i])--;
+        }
+        for(int i=0;i<sizes;i++)
+            if(m.at(s[i])!=0)
+                return false;//判断哈希表value是否全为0
+        return true;
+    }
+};
+//方法二 使用一个int数组作为哈希表 
+class Solution {
+public:
+    bool isAnagram(string s, string t) {
+        if(s.size()!=t.size())
+            return false;//字符个数不同，必不相同。
+        int size=s.size();
+        int n[26]={0};//哈希表 0-26为key，代表'a'-'z'，值为出现的次数
+        for(int i=0;i<size;i++)
+        {
+            n[s[i]-'a']++;//s中出现的字符，出现次数加一
+            n[t[i]-'a']--;//t中出现的字符，出现次数减一，与stl中的哈希表相比，初始化简单，不需判断key值是否存在
+        }
+        for(int i=0;i<26;i++)
+            if(n[i]!=0)
+                return false;//哈希表的value有一个非0则两个字符串不同
+        return true;//否则哈希表全为0，两个字符串相同
+    }
+};
