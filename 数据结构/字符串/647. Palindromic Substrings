@@ -43,3 +43,44 @@ public:
         return res;
     }
 };
+//方法二 字符串分割，对每个子字符串进行回文字符串判断。
+//如s="abc"，i=0,1,2； 每个字符均向后组合
+//i=0时，有"a","ab","abc"
+//i=1时，有"b","bc"
+//i=2时，有"c"
+class Solution {
+public:
+    int countSubstrings(string s) {
+        int size=s.size();
+        int res=0;
+        if(s.empty())
+            return res;
+        for(int i=0;i<size;i++)
+        {
+            string temp="";//注意string不能赋值char，但是可以先赋值""空字符串，再与char型相加
+            temp+=s[i];
+            res++;
+            for(int j=i+1;j<size;j++)
+            {
+                temp+=s[j];//每一个字符均向后结合，新字符串判断是否是回文字符串
+                if(isPalindromic(temp))
+                    res++;
+            }
+        }
+        return res;
+    }
+    bool isPalindromic(string s)
+    {
+        if(s.empty())
+            return true;
+        int i=0,j=s.size()-1;//双指针法判断回文字符串
+        while(i<j)
+        {
+            if(s[i]!=s[j])
+                return false;
+            i++;
+            j--;
+        }
+        return true;
+    }
+};
