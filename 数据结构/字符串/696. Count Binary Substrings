@@ -1,0 +1,44 @@
+/*
+题目：
+Give a string s, count the number of non-empty (contiguous) substrings that have the same number 
+of 0's and 1's, and all the 0's and all the 1's in these substrings are grouped consecutively.
+Substrings that occur multiple times are counted the number of times they occur.
+Example 1:
+Input: "00110011"
+Output: 6
+Explanation: There are 6 substrings that have equal number of consecutive 1's and 0's: "0011", "01", "1100", "10", "0011", and "01".
+Notice that some of these substrings repeat and are counted the number of times they occur.
+Also, "00110011" is not a valid substring because all the 0's (and 1's) are not grouped together.
+Example 2:
+Input: "10101"
+Output: 4
+Explanation: There are 4 substrings: "10", "01", "10", "01" that have equal number of consecutive 1's and 0's.
+Note:
+s.length will be between 1 and 50,000.
+s will only consist of "0" or "1" characters.
+解析：
+按照连续顺序划分子字符串，如"001110000110011"划分为
+"00" "111" "0000" "11" "00" "11" 相邻子字符串之间的最小字符数min(size1,size2)即为可划分的最大子字符串数。
+遍历数组，用两个变量分别记录前一个组和后一个组的字符数目，其最小值即为相邻组之间的子字符串数。
+cur=1，从i=1开始比较s[i]与s[i-1]是否相同。当不同时，pre=cur，同时cur继续遍历，若pre>=cur说明，后组的当前字符数目小于
+前组，res++；直至pre<cur或s[i]与s[i-1]再次不相等。
+*/
+class Solution {
+public:
+    int countBinarySubstrings(string s) {
+        int pre=0,cur=1,res=0;//pre初值0，cur至少为1，
+        for(int i=1;i<s.size();i++)
+        {
+            if(s[i]!=s[i-1])//遇到分界点
+            {
+                pre=cur;//当前组数目cur即为之前组数目
+                cur=1;//当前数目归1，重新计数
+            }
+            else
+                cur++;//相等说明当前组未到分界点，当前组数组加一
+            if(pre>=cur)//若前组数目大于当前组当前数目，说明可划分的子字符串+1 如pre=3，000 此时cur只要最终值大于pre=3，都可以划分至少3个子串
+                res++;
+        }
+        return res;
+    }
+};
