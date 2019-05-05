@@ -1,0 +1,116 @@
+/*
+题目：
+Given a circular array (the next element of the last element is the first element of the array), 
+print the Next Greater Number for every element. The Next Greater Number of a number x is the first 
+greater number to its traversing-order next in the array, which means you could search circularly to 
+find its next greater number. If it doesn't exist, output -1 for this number.
+Example 1:
+Input: [1,2,1]
+Output: [2,-1,2]
+Explanation: The first 1's next greater number is 2; 
+The number 2 can't find next greater number; 
+The second 1's next greater number needs to search circularly, which is also 2.
+Note: The length of given array won't exceed 10000.
+解析：
+如之前寻找数组中元素其后比他大的第一个元素，但是，当其后未找到时，再找其之前的元素。
+[1,2,5,4,3,1]
+对于第一种题目非循环数组，3元素其后没有比他大的元素，应输出-1。对j检索（>j）&&(<size)
+对于第二种题目循环数组，3元素其后没有但是由于数组循环，应再从数组前面检索（>=0）&&(<j)
+*/
+//方法一 for for循环 使用一个flag位，记录是否找到，未找到再检索前面 时间复杂度最差
+class Solution {
+public:
+    vector<int> nextGreaterElements(vector<int>& nums) {
+        int size=nums.size();
+        vector<int> res=nums;
+        for(int i=0;i<size;i++)
+            res[i]=-1;
+        vector<int> flag=nums;
+        for(int i=0;i<size;i++)
+            flag[i]=0;
+        for(int i=0;i<size;i++)
+        {
+            for(int j=i+1;j<size;j++)
+            {
+                if(nums[j]>nums[i])
+                {
+                    res[i]=nums[j];
+                    flag[i]=1;
+                    break;
+                }
+            }
+            if(flag[i]==0)
+            for(int j=0;j<i;j++)
+            {
+                if(nums[j]>nums[i])
+                {
+                    res[i]=nums[j];
+                    break;
+                }
+            }
+        }
+        return res;
+    }
+};
+
+//方法二  使用stack nums数组加倍 [1,3,5,2,1]->[1,3,5,2,1,1,3,5,2,1] 缺点是需要额外的储存空间
+class Solution {
+public:
+    vector<int> nextGreaterElements(vector<int>& nums) {
+        int size=nums.size();
+        vector<int> temp=nums;
+        for(int i=0;i<size;i++)
+            temp.push_back(temp[i]);//不修改输入 创建一个副本，为nums的首尾拼接
+        vector<int> res=temp;
+        for(int i=0;i<size*2;i++)
+            res[i]=-1;//结果初值为-1
+        stack<int> st;
+        for(int i=0;i<size*2;i++)
+        {
+            while(!st.empty())
+            {
+                if(temp[i]>temp[st.top()])
+                {
+                    res[st.top()]=temp[i];
+                    st.pop();
+                }
+                else
+                    break;
+            }
+            st.push(i);
+        }//遍历并寻找，保存在res中
+        vector<int> r;
+        for(int i=0;i<size;i++)
+            r.push_back(res[i]);//取res前一半即为解
+        return r;
+    }
+};
+
+//方法三 使用stack 对序号进行操作 i[0,2*size), k=i%size[0,size)
+class Solution {
+public:
+    vector<int> nextGreaterElements(vector<int>& nums) {
+        int size=nums.size();
+        vector<int>res=nums;
+        for(int i=0;i<size;i++)
+            res[i]=-1;//初值均设为-1
+        stack<int> st;
+        for(int i=0;i<size*2;i++)//i[0,2size-2]
+        {
+            int k=i%size;//k[0,size-1]
+            while(!st.empty())
+            {
+                if(nums[k]>nums[st.top()])
+                {
+                    res[st.top()]=nums[k];//i>size时，k从前面遍历
+                    st.pop();
+                }
+                else
+                    break;
+            }
+            if(i<size)
+                st.push(i);//栈中索引为[0,size-1]
+        }
+        return res;
+    }
+};
