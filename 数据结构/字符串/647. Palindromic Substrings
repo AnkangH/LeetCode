@@ -1,0 +1,45 @@
+/*
+题目：
+Given a string, your task is to count how many palindromic substrings in this string.
+The substrings with different start indexes or end indexes are counted as different substrings even they consist of same characters.
+Example 1:
+Input: "abc"
+Output: 3
+Explanation: Three palindromic strings: "a", "b", "c".
+Example 2:
+Input: "aaa"
+Output: 6
+Explanation: Six palindromic strings: "a", "a", "a", "aa", "aa", "aaa".
+Note:
+The input string length won't exceed 1000.
+解析：
+对于字符串s="abcder",遍历字符串，对于每一个字符，尝试左右扩展字符串，并判断扩展的字符串是否为回文字符串。
+如i=3,s[i]='d',应尝试左右不同步扩展，如"d","cd","de","cde","bcd"等。。。
+这里i取0-2*size-1; left=i/2;i=0,1时，left均为0，i=2时，left=1；right=left+i%2,当i=0时，right=0；
+i=1时，right=1，i=2时，right=2.
+i    left  right  范围
+0    0     0      [0,0]
+1    0     1      [0,1]
+2    1     2      [1,2]
+3    1     2      [1,2]
+对left和right同步扩展，即可获取不同步扩展的各个子字符串。对各个子字符串进行回文检测。
+*/
+class Solution {
+public:
+    int countSubstrings(string s) {
+        int size=s.size();
+        int res=0;
+        for(int i=0;i<2*size-1;i++)
+        {
+            int left=i/2;
+            int right=left+i%2;
+            while(left>=0&&right<size&&s[left]==s[right])
+            {
+                res++;
+                left--;
+                right++;
+            }
+        }
+        return res;
+    }
+};
