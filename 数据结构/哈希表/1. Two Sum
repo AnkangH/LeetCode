@@ -1,0 +1,54 @@
+/*
+题目：
+Given an array of integers, return indices of the two numbers such that they add up to a specific target.
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+Example:
+Given nums = [2, 7, 11, 15], target = 9,
+Because nums[0] + nums[1] = 2 + 7 = 9,
+return [0, 1].
+解析：对于每一个元素i，检索剩余元素与其的和，或与target的差
+*/
+//方法一 BruteForce 时间复杂度差
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        int size=nums.size();
+        vector<int>res;
+        for(int i=0;i<size;i++)
+        { 
+            for(int j=i+1;j<size;j++)
+            {
+                if(nums[i]+nums[j]==target)
+                {
+                    res.push_back(i);
+                    res.push_back(j);
+                    break;
+                }
+            }
+            if(!res.empty())
+                break;
+        }
+        return res;
+    }
+};
+//方法二 哈希表
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        map<int,int> m;//创建表
+        vector<int>res;
+        int size=nums.size();
+        for(int i=0;i<size;i++)
+        {
+            auto x=m.find(target-nums[i]);//在已经创建的表里寻找target-nums[i]，若找到说明和为该两个值
+            if(x!=m.end())
+            {
+                res.push_back(x->second);
+                res.push_back(i);
+                break;
+            }
+            m.insert(pair<int,int>(nums[i],i));//这里key为数组元素的值，value为索引
+        }
+        return res;
+    }
+};
