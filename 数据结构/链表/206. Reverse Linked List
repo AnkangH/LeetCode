@@ -1,0 +1,38 @@
+/*
+题目：
+Reverse a singly linked list.
+Example:
+Input: 1->2->3->4->5->NULL
+Output: 5->4->3->2->1->NULL
+解析：
+采用头插法反转链表。需要记录三个变量：
+当前节点p（按原链表顺序遍历）
+下个节点nxt（原链表的下个节点，因为修改了链表当前节点的下个节点，所以需要保存，使得节点遍历按原链表顺序进行）
+上个节点res（pre，从NULL开始，保存当前节点p的值，作为下次修改p+1节点的下一个节点p）
+如 1->2->3->4->5->NULL
+round1：保存1的原指向节点2，1节点的原指向打断，指向res的初值NULL，res保存当前节点1作为下个节点2的指向
+...
+*/
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* res=NULL;//需要设初值为NULL，不可省略
+        ListNode* p=head;
+        while(p!=NULL)
+        {
+            ListNode* nxt=p->next;//保留当前节点的下一个节点
+            p->next=res;//修改当前节点指向前一个节点
+            res=p;//保留下次修改的前节点
+            p=nxt;//p遍历原链表
+        }
+        return res;//实际上res与p同变化，但是p遍历到了NULL
+    }
+};
