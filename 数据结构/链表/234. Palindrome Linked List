@@ -1,0 +1,100 @@
+/*
+题目：
+Given a sorted linked list, delete all duplicates such that each element appear only once.
+Example 1:
+Input: 1->1->2
+Output: 1->2
+Example 2:
+Input: 1->1->2->3->3
+Output: 1->2->3
+解析：
+方法一：遍历链表，将链表值放入数组，利用双指针法判断数组是否为回文，即是判断链表是否为回文链表。
+思路简单但是时间复杂度和空间复杂度都不好。
+方法二：将链表切半，利用快慢指针i,j j每次移动一个，i每两次移动一次，这样当j到达链表尾时，i到达前一半链表的最后节点。
+利用i将链表切分，反转后半链表，并顺序遍历前半链表和后半链表，有一个节点值不同则不是回文链表。
+1->2->3->4->5
+最后i停在2,j停在5，n+1为节点个数
+所以前半链表为1->2 后半链表为4->5
+*/
+//方法一
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        if(head==NULL)
+            return true;
+        vector<int> v;//辅助数组
+        ListNode* p=head;
+        while(p!=NULL)
+        {
+            v.push_back(p->val);//遍历链表，将值储存在数组中
+            p=p->next;
+        }
+        int i=0,j=v.size()-1;
+        while(i<j)//双指针法判断数组是否为回文
+        {
+            if(v[i]!=v[j])
+                return false;
+            i++;
+            j--;
+        }
+        return true;
+    }
+};
+
+//方法二
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        if(head==NULL||head->next==NULL)
+            return true;//当链表空或只有一个节点时，是回文链表，直接输出
+        ListNode* s=head;//慢指针，每两个节点走一步
+        ListNode* f=head;//快指针，每个节点走一步
+        ListNode* l=s;//l为前链表的起点，这里s一直移动到了前链表的结尾，所以将l设为s的起点，然后将s最后指向NULL即分割出了前链表
+        int n=0;//慢指针计数
+        while(f->next!=NULL)//这里让慢指针最后停在n/2位置 所以条件是f->next==NULL
+        {
+            if(n!=0&&n%2==0)
+                s=s->next;//慢指针每两个节点走一步
+            f=f->next;//快指针每一个节点走一步
+            n++;//计数增加，最后n的值为链表元素-1，即链表有n+1个节点
+        }
+        ListNode* p=NULL;//后半链表的起点
+        if((n+1)%2==0)
+            p=s->next;//若偶数个节点，后半链表起点为前半链表结尾的下一个
+        else
+            p=s->next->next;//若奇数个节点，后半链表起点为前半链表结尾下一个的下一个
+        s->next=NULL;//这里修改s->next==NULL是为了前半链表的结尾
+        ListNode* pre=NULL;//头插法反转后半链表
+        while(p!=NULL)
+        {
+            ListNode* nxt=p->next;
+            p->next=pre;
+            pre=p;
+            p=nxt;
+        }
+        while(l!=NULL&&pre!=NULL)//判断前半链表和反转后的后半链表是否每个节点都相同
+        {
+            if(l->val!=pre->val)
+                return false;
+            l=l->next;
+            pre=pre->next;
+        }
+        return true;
+    }
+};
