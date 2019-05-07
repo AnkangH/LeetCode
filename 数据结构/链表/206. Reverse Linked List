@@ -13,6 +13,7 @@ Output: 5->4->3->2->1->NULL
 round1：保存1的原指向节点2，1节点的原指向打断，指向res的初值NULL，res保存当前节点1作为下个节点2的指向
 ...
 */
+//方法一： 头插法 如上解析所示
 /**
  * Definition for singly-linked list.
  * struct ListNode {
@@ -34,5 +35,40 @@ public:
             p=nxt;//p遍历原链表
         }
         return res;//实际上res与p同变化，但是p遍历到了NULL
+    }
+};
+//方法二 使用stack的LIFO特性 原链表依次入栈 到链表尾后 出栈重建链表
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        if(head==NULL)
+            return head;//空链表判断
+        ListNode* p=head;//不对输入做修改
+        stack<ListNode*> st;//辅助栈
+        while(p!=NULL)
+        {
+            st.push(p);//原链表入栈
+            p=p->next;
+        }
+        ListNode* res=new ListNode(1);//声明链表节点时一定要用ListNode(int)，不能赋NULL，否则没有空间，不能访问res->next
+        ListNode* pp=res;//res保存结果的链表头，用res副本pp重建链表，最后输出res->next即可。
+        while(!st.empty())
+        {
+            ListNode* temp= new ListNode(st.top()->val);//新节点
+            pp->next=temp;//做为新链表的后节点
+            pp=pp->next;//当前节点向后移动
+            st.pop();//出栈
+        }
+        pp->next=NULL;//链表尾添加NULL
+        return res->next;//这样重建后，因为声明新链表的时候，首节点必须有值，所以最后链表为1->5->4->3->2->1->NULL,首节点为自定义的值
+                         //所以要输出首节点的下一个节点。
     }
 };
