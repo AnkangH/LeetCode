@@ -1,0 +1,44 @@
+/*
+题目：
+Given a sorted linked list, delete all duplicates such that each element appear only once.
+Example 1:
+Input: 1->1->2
+Output: 1->2
+Example 2:
+Input: 1->1->2->3->3
+Output: 1->2->3
+解析：
+需要两个变量，一个当前节点，一个上一个节点，只有当当前节点大于上个节点时，上个节点才更新为当前节点。
+因为链表的属性为val和next，所以这里不需要保存下个节点nxt，如果当前节点的值等于上个节点，上个节点直接指向
+当前节点的下个节点。
+*/
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if(head==NULL)
+            return head;
+        ListNode* p=head;//不修改head
+        ListNode* pre=p;//前节点
+        ListNode* res=p;//头
+        p=p->next;//p从第2个节点开始判断
+        while(p!=NULL)
+        {
+            if(p->val==pre->val)
+            {
+                pre->next=p->next;//若相等，修改指向 pre->nxt
+            }
+            else
+                pre=p;//不想等 pre更新为当前节点
+            p=p->next;//循环继续
+        }
+        return res;//res和head均可，这里未修改其位置
+    }
+};
