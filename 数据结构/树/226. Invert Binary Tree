@@ -1,0 +1,76 @@
+/*
+题目：
+Invert a binary tree.
+Example:
+Input:
+
+     4
+   /   \
+  2     7
+ / \   / \
+1   3 6   9
+Output:
+     4
+   /   \
+  7     2
+ / \   / \
+9   6 3   1
+解析：
+将输入的二叉树，交换左右子树。
+方法一：使用递归
+方法二：利用队列实现广度优先遍历，对每一层的每一个节点，交换其左右节点。
+*/
+//方法一
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if(root==NULL)
+           return root;
+        TreeNode* left=root->left;//保存左子树
+        root->left=invertTree(root->right);//修改左子树
+        root->right=invertTree(left);//修改右子树
+        return root;
+    }
+};
+
+//方法二
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if(root==NULL)
+           return root;//预判断
+        queue<TreeNode*> q;//辅助队列
+        q.push(root);//根节点入队列
+        while(!q.empty())
+        {
+            TreeNode* temp=q.front();//获取队列头
+            TreeNode* left=temp->left;//交换两个变量需先保存其中一个变量
+            temp->left=temp->right;
+            temp->right=left;
+            if(temp->left!=NULL)
+                q.push(temp->left);//左节点（交换后的）入队列
+            if(temp->right!=NULL)
+                q.push(temp->right);//右节点（交换后的）入队列
+            q.pop();//队列首出队列
+        }
+        return root;
+    }
+};
