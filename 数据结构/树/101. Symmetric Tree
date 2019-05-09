@@ -1,0 +1,47 @@
+/*
+题目：
+Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).
+For example, this binary tree [1,2,2,3,4,4,3] is symmetric:
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+But the following [1,2,2,null,3,null,3] is not:
+
+    1
+   / \
+  2   2
+   \   \
+   3    3
+解析：
+利用递归，判断节点i的左右节点。当左右节点值有一对不等时，返回false，否则一直遍历到叶节点，并返回true.
+*/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        if(root==NULL)
+            return true;
+        return isSymmetricSub(root->left,root->right);
+    }
+    bool isSymmetricSub(TreeNode* left,TreeNode* right)
+    {
+        if(left==NULL&&right==NULL)
+            return true;//若左右节点都不存在则对称
+        if(left==NULL||right==NULL)
+            return false;//有一节点不对称 返回false
+        if(left->val!=right->val)
+            return false;//若左右节点都存在，但值不同返回false。递归中有一个不等就返回false
+        return isSymmetricSub(left->left,right->right)&&isSymmetricSub(right->left,left->right);//检索左节点的左节点和右节点的右节点是否对称
+        //左节点的右节点和右节点的左节点是否对称
+    }
+};
