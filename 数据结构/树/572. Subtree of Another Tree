@@ -1,0 +1,63 @@
+/*
+题目：
+Given two non-empty binary trees s and t, check whether tree t has exactly the same structure and node 
+values with a subtree of s. A subtree of s is a tree consists of a node in s and all of this node's 
+descendants. The tree s could also be considered as a subtree of itself.
+Example 1:
+Given tree s:
+     3
+    / \
+   4   5
+  / \
+ 1   2
+Given tree t:
+   4 
+  / \
+ 1   2
+Return true, because t has the same structure and node values with a subtree of s.
+Example 2:
+Given tree s:
+     3
+    / \
+   4   5
+  / \
+ 1   2
+    /
+   0
+Given tree t:
+   4
+  / \
+ 1   2
+Return false.
+*/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool isSubtree(TreeNode* s, TreeNode* t) {
+        if(s==NULL&&t==NULL)
+           return true;//判断结束，未输出false则输出true
+        if(s==NULL||t==NULL)
+            return false;//不符合上面又s==NULL||t==NULL，所以是s，t有一个为NULL但不全为NULL
+        if(s->val==t->val&&isSame(s,t))
+            return true;//否则两个均不为NULL，判断其当前值是否相同，子树是否相同
+        return isSubtree(s->left,t)||isSubtree(s->right,t);//t可以是s的任一左或右子树。
+    }
+    bool isSame(TreeNode* s, TreeNode* t)//判断两棵树是否完全相同
+    {
+        if(s==NULL&&t==NULL)
+            return true;
+        if(s==NULL||t==NULL)
+            return false;//这里相当于s和t有一个是NULL，但不全为NULL，return false，因为顺序特性，先排除了s，t全为NULL的情况。
+        if(s->val!=t->val)
+            return false;
+        return isSame(s->left,t->left)&&isSame(s->right,t->right);
+    }
+};
