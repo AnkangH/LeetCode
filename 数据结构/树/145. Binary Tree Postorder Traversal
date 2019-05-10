@@ -1,0 +1,48 @@
+/*
+题目：
+Given a binary tree, return the postorder traversal of its nodes' values.
+Example:
+Input: [1,null,2,3]
+   1
+    \
+     2
+    /
+   3
+Output: [3,2,1]
+Follow up: Recursive solution is trivial, could you do it iteratively?
+解析：
+给定一颗二叉树，使用非递归方法求其后序遍历。
+因为后序遍历的顺序为左右根，所以可以使用辅助栈求根右左的遍历顺序，再反转遍历即可。
+*/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> res;
+        if(root==NULL)
+            return res;
+        stack<TreeNode*> st;//辅助栈
+        st.push(root);
+        while(!st.empty())
+        {
+            TreeNode* t=st.top();
+            st.pop();
+            if(t!=NULL)
+                res.push_back(t->val);
+            if(t->left!=NULL)
+                st.push(t->left);//先左 这样栈顶后左
+            if(t->right!=NULL)
+                st.push(t->right);//后右 这样栈顶先右  
+        }
+        reverse(res.begin(),res.end());//res中保存了根右左的遍历顺序，反转即可。
+        return res;
+    }
+};
