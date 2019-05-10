@@ -1,0 +1,69 @@
+/*
+题目：
+Given a binary search tree (BST), find the lowest common ancestor (LCA) of two given nodes in the BST.
+According to the definition of LCA on Wikipedia: “The lowest common ancestor is defined between two nodes 
+p and q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself).”
+Given binary search tree:  root = [6,2,8,0,4,7,9,null,null,3,5]
+Example 1:
+Input: root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 8
+Output: 6
+Explanation: The LCA of nodes 2 and 8 is 6.
+Example 2:
+Input: root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 4
+Output: 2
+Explanation: The LCA of nodes 2 and 4 is 2, since a node can be a descendant of itself according to the LCA definition.
+Note:
+All of the nodes' values will be unique.
+p and q are different and both values will exist in the BST.
+解析：
+根据二叉搜索树的定义，左侧节点<根节点<右侧节点
+方法一：递归法，若当前节点值>max(p,q)，向左搜索；若当前节点值<min(p,q)，向右搜索。否则输出当前节点
+方法二：迭代法，同递归法思路。
+*/
+//方法一 递归法
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(root->val>p->val&&root->val>q->val)
+            return lowestCommonAncestor(root->left,p,q);//搜索左子树
+        else if(root->val<p->val&&root->val<q->val)
+            return lowestCommonAncestor(root->right,p,q);//搜索右子树
+        else return root;//找到节点
+    }
+};
+
+//方法二 迭代法
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        TreeNode* cur=root;
+        while(cur!=NULL)
+        {
+            if(cur->val>max(p->val,q->val))
+                cur=cur->left;//当前节点值大，向左（减小）搜索
+            else if(cur->val<min(p->val,q->val))
+                cur=cur->right;//当前节点值小，向右（增大）搜索
+            else
+                break;//这里二叉搜索树的节点不同，且p，q不同，所以当不满足上述条件时，说明 cur>min(p,q) cur<max(p,q)
+        }
+        return cur;//返回当前节点
+    }
+};
