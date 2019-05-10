@@ -1,0 +1,53 @@
+/*
+题目：
+Given a binary search tree, write a function kthSmallest to find the kth smallest element in it.
+Note: 
+You may assume k is always valid, 1 ≤ k ≤ BST's total elements.
+Example 1:
+Input: root = [3,1,4,null,2], k = 1
+   3
+  / \
+ 1   4
+  \
+   2
+Output: 1
+Example 2:
+Input: root = [5,3,6,2,4,null,null,1], k = 3
+       5
+      / \
+     3   6
+    / \
+   2   4
+  /
+ 1
+Output: 3
+解析：
+给定一个二叉搜索树（节点值各不相同），返回其中第k小的节点值。
+中序遍历获取二叉搜索树的有序序列。返回数组索引k-1的元素即可。
+*/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        vector<int> arr;
+        inOrder(root,arr);//获取有序数组
+        int size=arr.size();
+        return arr[k-1];//i=0对应第1小，i=1对应第2小，...，i=k-1对应第k小
+    }
+    void inOrder(TreeNode* root,vector<int>& arr)//中序遍历
+    {
+        if(root==NULL)
+            return;
+        inOrder(root->left,arr);
+        arr.push_back(root->val);
+        inOrder(root->right,arr);
+    }
+};
