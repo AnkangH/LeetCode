@@ -1,0 +1,62 @@
+/*
+题目：
+The thief has found himself a new place for his thievery again. There is only one entrance to this area, 
+called the "root." Besides the root, each house has one and only one parent house. After a tour, the smart 
+thief realized that "all houses in this place forms a binary tree". It will automatically contact the police 
+if two directly-linked houses were broken into on the same night.
+Determine the maximum amount of money the thief can rob tonight without alerting the police.
+Example 1:
+Input: [3,2,3,null,3,null,1]
+
+     3
+    / \
+   2   3
+    \   \ 
+     3   1
+Output: 7 
+Explanation: Maximum amount of money the thief can rob = 3 + 3 + 1 = 7.
+Example 2:
+Input: [3,4,5,1,3,null,1]
+
+     3
+    / \
+   4   5
+  / \   \ 
+ 1   3   1
+Output: 9
+Explanation: Maximum amount of money the thief can rob = 4 + 5 = 9.
+解析：盗贼问题的变体，盗贼从树（共n个节点）的根节点出发，从n个节点中选出k个不相邻的节点，
+使其和最大。
+*/
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int rob(TreeNode* root) {
+        int pre=0,cur=0;
+        robSub(root,pre,cur);
+        return cur;
+    }
+    void robSub(TreeNode* root,int& pre,int& cur)
+    {
+        if(root==NULL)
+        {
+            pre=cur=0;
+            return;
+        }
+        int pl,pr,cl,cr;
+        robSub(root->left,pl,cl);
+        robSub(root->right,pr,cr);
+        int temp=max(pr+pl+root->val,cl+cr);
+        pre=cl+cr;
+        cur=temp;
+    }
+};
