@@ -1,0 +1,33 @@
+/*
+题目：
+Given an integer (signed 32 bits), write a function to check whether it is a power of 4.
+Example 1:
+Input: 16
+Output: true
+Example 2:
+Input: 5
+Output: false
+解析：
+给定一个有符号整数，判断其是否是4的幂。
+4的二进制左移2的倍数是4的幂，因此可以设定初值为4，左移两位判断是否等于num
+*/
+class Solution {
+public:
+    bool isPowerOfFour(int num) {
+        if(num<0)
+            return false;
+        if(num==1)
+            return true;
+        int start=4;
+        while(start<=num)
+        {
+            if(start==num)
+                return true;
+            if(start<=INT_MAX>>2)//这里注意当start<INT_MAX时，其左移两位可能会超范围，所以要限定上限。
+                start=start<<2;
+            else
+                return false;
+        }
+        return false;
+    }
+};
