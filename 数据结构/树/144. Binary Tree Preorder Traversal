@@ -40,7 +40,7 @@ public:
             if(temp->right!=NULL)
                 st.push(temp->right);//先右  这样栈顶后右
             if(temp->left!=NULL)
-                st.push(temp->left);//后左  这样栈顶先左 满足先序遍历
+                st.push(temp->left);//后左  这样栈顶先左 满足前序遍历
         }
         return res;
     }
