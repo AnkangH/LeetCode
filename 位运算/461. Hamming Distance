@@ -1,0 +1,34 @@
+/*
+题目：
+The Hamming distance between two integers is the number of positions at which the corresponding bits are different.
+Given two integers x and y, calculate the Hamming distance.
+Note:
+0 ≤ x, y < 2^31.
+Example:
+Input: x = 1, y = 4
+Output: 2
+Explanation:
+1   (0 0 0 1)
+4   (0 1 0 0)
+       ↑   ↑
+The above arrows point to positions where the corresponding bits are different.
+解析：
+给定两个整数，判断其二进制中，不同的位数。
+两个数按位异或，统计异或结果中1的个数，即为两个数二进制中不同的位数。
+由于这里x，y均为正，所以符号位为0^0=0,异或结果为正，所以可以用异或结果右移！=0作为循环结束条件。
+当z小于0时，while(z!=0) z=z>>1;是死循环
+*/
+class Solution {
+public:
+    int hammingDistance(int x, int y) {
+        int z=x^y;
+        int res=0;
+        while(z!=0)//只有当z>0时可以用右移的方法使其为0
+        {
+            if(z&1==1)//按位与1，可以判断异或结果最低位是否为1，即x和y二进制最低位是否相同
+                res++;
+            z=z>>1;//右移获取高位
+        }
+        return res;
+    }
+};
