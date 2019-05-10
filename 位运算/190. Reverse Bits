@@ -1,0 +1,39 @@
+/*
+题目：
+Reverse bits of a given 32 bits unsigned integer.
+Example 1:
+Input: 00000010100101000001111010011100
+Output: 00111001011110000010100101000000
+Explanation: The input binary string 00000010100101000001111010011100 represents the unsigned integer 43261596, 
+so return 964176192 which its binary representation is 00111001011110000010100101000000.
+Example 2:
+Input: 11111111111111111111111111111101
+Output: 10111111111111111111111111111111
+Explanation: The input binary string 11111111111111111111111111111101 represents the unsigned integer 4294967293, 
+so return 3221225471 which its binary representation is 10101111110010110010011101101001.
+Note:
+Note that in some languages such as Java, there is no unsigned integer type. In this case, both input and output 
+will be given as signed integer type and should not affect your implementation, as the internal binary representation
+of the integer is the same whether it is signed or unsigned.
+In Java, the compiler represents the signed integers using 2's complement notation. Therefore, in Example 2 above the 
+input represents the signed integer -3 and the output represents the signed integer -1073741825.
+解析：
+给定一个32位无符号数（最高位不是符号位），反转其二进制值，高位变成低位。并输出该整数。
+一个数按位与1可以获取二进制最低位，令res=0，res按位或该数的最低位，并右移，则最低位变高一次。
+循环操作，即可将原二进制的高低位反转。
+*/
+class Solution {
+public:
+    uint32_t reverseBits(uint32_t n) {
+        uint32_t res=0;
+        int i=32;
+        while(i-->0)//这里如果使用n!=0作为条件，则n=0的最后一位不能使用，所以只要保证移位32次即可。
+        {
+            uint32_t temp=n&1;//获取低位i
+            res=res<<1;//低位变高位
+            res=res|temp;//保存低位i
+            n=n>>1;//获取低位i+1
+        }
+        return res;
+    }
+};
