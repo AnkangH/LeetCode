@@ -1,0 +1,54 @@
+/*
+题目：
+Given a non-empty binary tree, return the average value of the nodes on each level in the form of an array.
+Example 1:
+Input:
+    3
+   / \
+  9  20
+    /  \
+   15   7
+Output: [3, 14.5, 11]
+Explanation:
+The average value of nodes on level 0 is 3,  on level 1 is 14.5, and on level 2 is 11. Hence return [3, 14.5, 11].
+Note:
+The range of node's value is in the range of 32-bit signed integer.
+解析：按层遍历二叉树，但是要确定节点属于哪一层。使用辅助队列，某节点入队列，如果该节点的左右子节点非空，那么子节点入队列，队列首出队列
+队列中的元素个数即为每一层的节点个数。
+*/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<double> averageOfLevels(TreeNode* root) {
+        vector<double> res;//结果
+        if(root==NULL)
+            return res;//树为空，直接返回空
+        queue<TreeNode*> auxQue;//辅助队列
+        auxQue.push(root);//根节点入队列
+        while(!auxQue.empty())
+        {
+            int size=auxQue.size();//该层的节点个数
+            double sum=0;
+            for(int i=0;i<size;i++)
+            {
+                TreeNode* temp=auxQue.front();//当前节点
+                auxQue.pop();
+                sum+=temp->val;//求和
+                if(temp->left!=NULL)
+                    auxQue.push(temp->left);//下一层的左节点入队列
+                if(temp->right!=NULL)
+                    auxQue.push(temp->right);//下一层的右节点入队列
+            }
+            res.push_back(sum/size);//每一层的平均值保存
+        }
+        return res;
+    }
+};
