@@ -1,0 +1,77 @@
+/*
+题目：
+Given a binary search tree (BST) with duplicates, find all the mode(s) (the most frequently occurred element) in the given BST.
+Assume a BST is defined as follows:
+The left subtree of a node contains only nodes with keys less than or equal to the node's key.
+The right subtree of a node contains only nodes with keys greater than or equal to the node's key.
+Both the left and right subtrees must also be binary search trees.
+For example:
+Given BST [1,null,2,2],
+
+   1
+    \
+     2
+    /
+   2
+return [2].
+Note: If a tree has more than one mode, you can return them in any order.
+Follow up: Could you do that without using any extra space? (Assume that the implicit stack space incurred due to 
+recursion does not count).
+解析：
+使用中序遍历获取二叉搜索树的有序数组。求数组中出现次数最多的元素。
+利用哈希表储存数组中每个元素出现的次数，然后求出现次数的最大值。
+再遍历数组，当数组元素出现次数为最大值，且结果中没有这个元素时，将这个元素放入返回数组。
+*/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> findMode(TreeNode* root) {
+        vector<int> res;//结果
+        if(root==NULL)
+            return res;//预判断
+        vector<int> arr;//有序数组
+        inOrder(root,arr);//中序遍历二叉搜索树获取有序数组
+        unordered_map<int,int> m;//哈希表
+        int size=arr.size();
+        //for(int i=0;i<size;i++)
+            //m.emplace(arr[i],0);//哈希表初始化时，value值为0，所以不需修改
+        for(int i=0;i<size;i++)
+            m[arr[i]]++;//保存数组元素出现次数
+        int maxVal=m[arr[0]];//出现次数的最大值
+        for(int i=1;i<size;i++)
+            maxVal=max(maxVal,m.find(arr[i])->second);//遍历哈希表，求出现次数的最大值
+        int k=0;//指向返回结果中的最后一个元素
+        for(int i=0;i<size;i++)
+            if(m.find(arr[i])->second==maxVal)//如果该元素的出现次数是最大值
+            {
+                if(res.empty())//返回结果是空的
+                {
+                    res.push_back(arr[i]);//直接放入返回数组
+                    k++;//k指向返回数组的最后一个元素
+                }
+                else if(arr[i]>res[k-1])//这里防止返回数组中多个相同结果
+                {
+                    res.push_back(arr[i]);//。如arr[1]和arr[3]相同，那么遍历到3的时候，由于arr[3]不大于res，不会放入
+                    k++;//k指向返回数组最后一个元素
+                }
+            }
+        return res;
+        
+    }
+    void inOrder(TreeNode* root,vector<int>& arr)//中序遍历
+    {
+        if(root==NULL)
+            return;
+        inOrder(root->left,arr);
+        arr.push_back(root->val);
+        inOrder(root->right,arr);
+    }
+};
