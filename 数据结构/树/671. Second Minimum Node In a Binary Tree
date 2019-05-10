@@ -1,0 +1,62 @@
+/*
+题目：
+Given a non-empty special binary tree consisting of nodes with the non-negative value, where each node in this 
+tree has exactly two or zero sub-node. If the node has two sub-nodes, then this node's value is the smaller value among its two sub-nodes.
+Given such a binary tree, you need to output the second minimum value in the set made of all the nodes' value in the whole tree.
+If no such second minimum value exists, output -1 instead.
+Example 1:
+Input: 
+    2
+   / \
+  2   5
+     / \
+    5   7
+Output: 5
+Explanation: The smallest value is 2, the second smallest value is 5.
+Example 2:
+Input: 
+    2
+   / \
+  2   2
+Output: -1
+Explanation: The smallest value is 2, but there isn't any second smallest value.
+解析：
+这里定义了给定的二叉树特性。即节点a若有子节点，子节点的数目必为2，即a的子节点为b和c，且有a<=b,a<=c
+所以判断节点与子节点的大小关系。如a=2，b=2，c=5时，5之后的节点不需要再判断，因为其节点值必>=5，且只要
+树不为空，根节点的值一定是最小值。利用两个全局变量min，midmin，分别代表最小值和第二小值，前序遍历二叉树
+判断当前节点与min和midmin的关系，若节点值>min且节点值<midmin，则用当前节点值更新midmin，若当前节点值不
+等于最小值，则其值一定一定大于等于midmin，则不需要再搜索其子树，midmin一定是第二小的值。
+*/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+    int min;
+    long midmin=LONG_MAX;//这里当输出结果为INT_MAX时，会出错，所以储存midmin的变量要比输入类型大才可以。
+public:
+    int findSecondMinimumValue(TreeNode* root) {
+        if(root==NULL)
+            return -1;//预判断，树空输出-1
+        min=root->val;//根节点一定是最小值
+        preOrder(root);
+        return midmin<LONG_MAX? midmin:-1;//若输入1,1，INT_MAX,此时无法判断midmin的值是否修改过
+    }
+    void preOrder(TreeNode* root)
+    {
+        if(root==NULL)
+            return;//退出条件
+        if(root->val>min&&root->val<midmin)
+            midmin=root->val;//更新midmin，min不用更新也不能更新，根据题目定义，根节点一定是最小值
+        else if(root->val==min)//当节点值等于最小值时，再向下搜索
+        {
+            preOrder(root->left);
+            preOrder(root->right);
+        }    
+    }
+};
