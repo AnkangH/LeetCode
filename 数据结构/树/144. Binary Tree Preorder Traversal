@@ -1,0 +1,47 @@
+/*
+题目：
+Given a binary tree, return the preorder traversal of its nodes' values.
+Example:
+Input: [1,null,2,3]
+   1
+    \
+     2
+    /
+   3
+Output: [1,2,3]
+Follow up: Recursive solution is trivial, could you do it iteratively?
+解析：
+给定一个二叉树，使用非递归方法获取先序遍历。
+使用辅助栈，根节点入栈，只要栈非空，注意子节点入栈顺序，先右后左，使栈顶元素先左后右复合先序遍历根左右的顺序。
+*/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int>res;
+        if(root==NULL)
+            return res;//预判断树空
+        stack<TreeNode*> st;//辅助栈
+        st.push(root);
+        while(!st.empty())
+        {
+            TreeNode* temp=st.top();//当前节点为栈顶元素
+            st.pop();//访问后出栈
+            if(temp!=NULL)
+                res.push_back(temp->val);//当前元素非空，其值放入遍历序列
+            if(temp->right!=NULL)
+                st.push(temp->right);//先右  这样栈顶后右
+            if(temp->left!=NULL)
+                st.push(temp->left);//后左  这样栈顶先左 满足先序遍历
+        }
+        return res;
+    }
+};
