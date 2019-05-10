@@ -1,0 +1,49 @@
+/*
+题目：
+Given a binary tree, return the inorder traversal of its nodes' values.
+Example:
+Input: [1,null,2,3]
+   1
+    \
+     2
+    /
+   3
+Output: [1,3,2]
+Follow up: Recursive solution is trivial, could you do it iteratively?
+解析：
+给定一颗二叉树，使用非递归方法求其中序（左根右）遍历
+使用辅助栈，从根节点出发，将最左侧节点全部入栈，直到左节点为空，再开始右节点入栈，栈顶出栈。
+这样遍历后，栈顶元素的变化就是后序遍历。
+*/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> res;
+        if(root==NULL)
+            return res;
+        stack<TreeNode*> st;
+        TreeNode* cur=root;
+        while(cur!=NULL||!st.empty())
+        {
+            while(cur!=NULL)
+            {
+                st.push(cur);
+                cur=cur->left;//左斜树节点全部入栈
+            }
+            TreeNode* t=st.top();
+            st.pop();//栈顶出栈
+            res.push_back(t->val);//栈顶节点值保存
+            cur=t->right;//遍历右节点。
+        }
+        return res;
+    }
+};
