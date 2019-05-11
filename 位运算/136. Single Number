@@ -1,0 +1,26 @@
+/*
+题目：
+Given a non-empty array of integers, every element appears twice except for one. Find that single one.
+Note:
+Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?
+Example 1:
+Input: [2,2,1]
+Output: 1
+Example 2:
+Input: [4,1,2,1,2]
+Output: 4
+解析：
+给定一个数组，数组中只有一个数值只出现了一次，其余都出现了两次。找出这个只出现了一次的数字。
+方法一：哈希表，遍历数组构建哈希表，再遍历哈希表，寻找value=1的key值，输出该key值。 这里不贴出代码
+方法二：两个数字若相同，异或为0，利用该特性，从数组第二个元素开始，修改其值为与前一个数字的异或，
+这样数组最后一个元素的值为只出现了一次的那个值。
+*/
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int size=nums.size();
+        for(int i=1;i<size;i++)
+            nums[i]=nums[i]^nums[i-1];//依次与前一个值异或并保存在当前位置。
+        return nums[size-1];//数组最后一个元素即为只出现了一次的那个元素
+    }
+};
