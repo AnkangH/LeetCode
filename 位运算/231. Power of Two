@@ -1,0 +1,33 @@
+/*
+题目：
+Given an integer, write a function to determine if it is a power of two.
+Example 1:
+Input: 1
+Output: true 
+Explanation: 20 = 1
+Example 2:
+Input: 16
+Output: true
+Explanation: 24 = 16
+Example 3:
+Input: 218
+Output: false
+解析：
+给定一个int型整数，判断其是否是2的幂。利用1左移，左移一次乘2，从而获取2的所有幂，比较是否等于n，直到当n<该值时，
+说明n不是2的幂。注意因为左移会超过INT的最大值，所以将操作数的类型设为long
+*/
+class Solution {
+public:
+    bool isPowerOfTwo(int n) {
+        if(n<0)
+            return false;//负数不是2的幂
+        long a=1;
+        while(a<=n&&a<=INT_MAX)//边界条件n=0和n=INT_MAX均满足
+        {
+            if(n==a)
+                return true;
+            a=a<<1;//a左移模拟所有2的幂
+        }
+        return false;
+    }
+};
