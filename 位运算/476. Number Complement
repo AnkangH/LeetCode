@@ -1,0 +1,38 @@
+/*
+题目：
+Given a positive integer, output its complement number. The complement strategy is to flip the bits of its binary representation.
+Note:
+The given integer is guaranteed to fit within the range of a 32-bit signed integer.
+You could assume no leading zero bit in the integer’s binary representation.
+Example 1:
+Input: 5
+Output: 2
+Explanation: The binary representation of 5 is 101 (no leading zero bits), and its complement is 010. So you need to output 2.
+Example 2:
+Input: 1
+Output: 0
+Explanation: The binary representation of 1 is 1 (no leading zero bits), and its complement is 0. So you need to output 0.
+解析：
+给定一个int型正整数num，求其二进制各位反转（0-1反转）之后的值。
+从低位到高位遍历num的二进制各位，记录当前位的位数k，反转0-1，当前位左移k位后按位或res即可。
+*/
+class Solution {
+public:
+    int findComplement(int num) {
+        int res=0;//结果
+        int k=0;//记录当前位的位数
+        while(num>0)//这里num正数，所以最后一次移位后必为0，同时利用num移位>0可以确定最高位的1
+        {
+            int cur=num&1;//取当前位
+            if(cur==0)
+                cur=1;//反转
+            else
+                cur=0;
+            cur=cur<<k;//恢复当前位
+            res=res|cur;//数值保存
+            num=num>>1;//获取高位
+            k++;//记录高位位数
+        }
+        return res;
+    }
+};
