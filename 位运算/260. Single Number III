@@ -1,0 +1,37 @@
+/*
+题目：
+Given an array of numbers nums, in which exactly two elements appear only once and all the other elements appear 
+exactly twice. Find the two elements that appear only once.
+Example:
+Input:  [1,2,1,3,2,5]
+Output: [3,5]
+Note:
+The order of the result is not important. So in the above example, [5, 3] is also correct.
+Your algorithm should run in linear runtime complexity. Could you implement it using only constant space complexity?
+解析：
+给定一个数组，数组中只有两个数字出现了一次，其余数字均出现了两次。找出这两个数字。
+使用哈希表可以很容易的解决出现次数问题，但是这里要求空间复杂度为常量。
+如果只有一个数字出现了一次，那么所有异或结果为这个数字。
+如果有两个数字只出现了一次，那么所有异或的结果为这两个数字的异或。
+找出这两个数字异或结果中第一个1，其余全设为0.用这个数字遍历原数组，数组元素中和这个数字按位与结果为0的元素相异或，
+数组元素中和这个数字按位与结果非0的元素相异或。这样就把数组区分开了，异或最后的结果就是两个只出现了一次的数字。
+*/
+class Solution {
+public:
+    vector<int> singleNumber(vector<int>& nums) {
+        int size=nums.size();
+        int dif=0;
+        for(int i=0;i<size;i++)
+            dif^=nums[i];//其这两个只出现了一次的数的异或结果
+        dif=dif&(-dif);//一个数与其负数按位与，除了第一个出现的1为1，其余均为0.
+        int a=0,b=0;
+        for(int i=0;i<size;i++)
+        {
+            if((dif&nums[i])==0)//这里注意按位与的优先级小于比较运算符
+                a=a^nums[i];
+            else
+                b=b^nums[i];
+        }
+        return vector<int>{a,b};
+    }
+};
