@@ -13,9 +13,12 @@ Example 3:
 Input: 218
 Output: false
 解析：
-给定一个int型整数，判断其是否是2的幂。利用1左移，左移一次乘2，从而获取2的所有幂，比较是否等于n，直到当n<该值时，
-说明n不是2的幂。注意因为左移会超过INT的最大值，所以将操作数的类型设为long
+给定一个int型整数，判断其是否是2的幂。
+方法一：利用1左移，左移一次乘2，从而获取2的所有幂，比较是否等于n，直到当n<该值时，说明n不是2的幂。注意因为左移会超过INT的最大值，
+所以将操作数的类型设为long
+方法二：2的幂中只有一个1，所以2的幂减1后，除了最高位为0，其余全为1.即2^n&(2^n-1)=0;
 */
+//方法一
 class Solution {
 public:
     bool isPowerOfTwo(int n) {
@@ -29,5 +32,13 @@ public:
             a=a<<1;//a左移模拟所有2的幂
         }
         return false;
+    }
+};
+
+//方法二
+class Solution {
+public:
+    bool isPowerOfTwo(int n) {
+        return n>0&&(n&(n-1))==0? true:false;
     }
 };
