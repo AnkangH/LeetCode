@@ -1,0 +1,89 @@
+/*
+题目：
+Given a string array words, find the maximum value of length(word[i]) * length(word[j]) where the two words 
+do not share common letters. You may assume that each word will contain only lower case letters. If no such two words exist, return 0.
+Example 1:
+Input: ["abcw","baz","foo","bar","xtfn","abcdef"]
+Output: 16 
+Explanation: The two words can be "abcw", "xtfn".
+Example 2:
+Input: ["a","ab","abc","d","cd","bcd","abcd"]
+Output: 4 
+Explanation: The two words can be "ab", "cd".
+Example 3:
+Input: ["a","aa","aaa","aaaa"]
+Output: 0 
+Explanation: No such pair of words.
+解析：
+给定一个字符串数组，每个字符串只包含小写字符，找出两个不包括对方字符的字符串，如ab和cd。（a和aa不行，b和aa可以）
+计算两个字符串长度的最大乘积。
+使用哈希表思想。
+利用一个int数组，每个int二进制的0-25位是0还是1代表'a-'z'是否出现，因为这里要求两个字符串不包含对方的字符，并不需要统计
+字符出现的次数，所以只要两个字符串的int型按位与不为0，则两个字符串一定包含对方的字符。
+利用一个数组，数组元素包含两个，一个是字符串在数组中的索引，一个是字符串的长度。遍历这个数组，计算字符串索引对应的int型数字按位与
+的结果，若不为1，则计算其字符串长度乘积，并保存长度乘积的最大值。
+这里使用int整形，二维数组pair<int,int>还是哈希表map<key,value>均可。使用unordered_map构建第二个哈希表，运行结果并不快，因为这里二维数组
+都需要遍历，按key查找的高效没有体现出来。
+*/
+//方法一
+class Solution {
+public:
+    int maxProduct(vector<string>& words) {
+        vector<pair<int,int>> map2;//保存字符串在数组中的索引和字符串长度
+        int size=words.size();
+        vector<int> map1;//保存每个字符串的字符出现情况
+        for(int i=0;i<size;i++)
+            map1.push_back(0);
+        for(int i=0;i<size;i++)
+        {
+            int temp_size=words[i].size();
+            map2.push_back(pair<int,int>{i,temp_size});
+            for(int j=0;j<temp_size;j++)
+                {
+                    int k=words[i][j]-'a';//判断字符串该位的字符0位-'a' 25位-'z'  
+                    map1[i]=(map1[i])|(1<<k);//若某个字符出现，则该字符对应二进制位置1
+                }
+        }
+        int res=0;
+        for(int i=0;i<size;i++)
+            for(int j=i+1;j<size;j++)
+            {
+                if(((map1[map2[i].first])&(map1[map2[j].first]))==0)//int型按位与结果不为1，即两个字符串不包含对方的字符
+                {
+                    res=max(res,map2[i].second*map2[j].second);//计算字符串长度乘积最大值
+                }
+            }
+        return res;
+    }
+    
+    //方法二 map2使用unordered_map
+    class Solution {
+public:
+    int maxProduct(vector<string>& words) {
+        unordered_map<int,int> map2;
+        int size=words.size();
+        vector<int> map1;
+        for(int i=0;i<size;i++)
+            map1.push_back(0);
+        for(int i=0;i<size;i++)
+        {
+            int temp_size=words[i].size();
+            map2.emplace(i,temp_size);
+            for(int j=0;j<temp_size;j++)
+                {
+                    int k=words[i][j]-'a';
+                    map1[i]=(map1[i])|(1<<k);
+                }
+        }
+        int res=0;
+        for(int i=0;i<size;i++)
+            for(int j=i+1;j<size;j++)
+            {
+                int a=map1[i];
+                int b=map1[j];
+                if((a&b)==0)
+                    res=max(res,map2.find(i)->second*map2.find(j)->second);
+            }
+        return res;
+    }
+};
