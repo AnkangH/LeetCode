@@ -1,0 +1,28 @@
+/*
+题目：
+Given an array nums, write a function to move all 0's to the end of it while maintaining the relative order of the non-zero elements.
+Example:
+Input: [0,1,0,3,12]
+Output: [1,3,12,0,0]
+Note:
+You must do this in-place without making a copy of the array.
+Minimize the total number of operations.
+解析：
+给定一个数组，在不改变非0数字相对位置的前提下，将数组中的0移动到数组末尾。要求对输入数组操作，不使用额外储存空间。
+使用双指针，开始两个指针都指向数组开始，一个指针遍历数组，每次+1，另一个指针只有在前一个指针对应的
+数组元素不为0时再指向下一个，这样后面指针的速度一定小于等于前面指针的速度。
+*/
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        int k=0;//慢指针
+        int size=nums.size();
+        for(int i=0;i<size;i++)//快指针
+        {
+            if(nums[i]!=0)//如果当前值不为0
+                nums[k++]=nums[i];//把当前值赋给慢指针的位置
+        }
+        for(k;k<size;k++)//退出循环后，k指向数组最后一个非0元素的下一个
+            nums[k]=0;
+    }
+};
