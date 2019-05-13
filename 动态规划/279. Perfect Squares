@@ -1,0 +1,31 @@
+/*
+题目：
+Given a positive integer n, find the least number of perfect square numbers (for example, 1, 4, 9, 16, ...) which sum to n.
+Example 1:
+Input: n = 12
+Output: 3 
+Explanation: 12 = 4 + 4 + 4.
+Example 2:
+Input: n = 13
+Output: 2
+Explanation: 13 = 4 + 9.
+解析：
+给定一个整数，将其拆分成n个数的平方和，使n最小。
+对于整数k，有递归公式:dp[k]=min(dp[i*i]+dp[k-i*i]),i=1,2,...,i*i<=k;
+这里dp[i*i]=1,平方和不需再拆分。
+*/
+class Solution {
+public:
+    int numSquares(int n) {
+        if(n<1)
+            return 0;
+        vector<int> dp(n+1,INT_MAX);//n+1个元素，初值均为INT_MAX
+        dp[0]=0;//当i-j*j=0时，取0+1
+        for(int i=1;i<=n;i++)
+            for(int j=1;j*j<=i;j++)
+            {
+                dp[i]=min(dp[i],dp[i-j*j]+1);
+            }
+        return dp[n];
+    }
+};
