@@ -24,7 +24,11 @@ k=2时，dp[1]=nums[1]
 k=3时，抢劫了nums[2]，因为相邻的不能抢，因此为保证和最大，只能再抢nums[0]
 这样递推下去后，数组最后两个数的最大值即是求的数字最大和。因为不能抢相邻的，所以
 不能保证数组最后一个元素即是最大值。
+方法一：使用数组保存递推结果
+方法二：使用三个变量保存递推结果
 */
+
+//方法一
 class Solution {
 public:
     int rob(vector<int>& nums) {
@@ -43,5 +47,32 @@ public:
             dp[i]=max(dp[i-2],dp[i-3])+nums[i];//递推公式
         if
         return max(dp[size-1],dp[size-2]);//因为相邻的没有判断大小，所以最后两个不能保证哪个更大
+    }
+};
+
+
+//方法二
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        if(nums.empty())
+            return 0;
+        int size=nums.size();
+        if(size==1)
+            return nums[0];
+        if(size==2)
+            return max(nums[0],nums[1]);
+        vector<int> dp(size,0);
+        int pre3=nums[0];
+        int pre2=nums[1];
+        int pre1=nums[0]+nums[2];
+        for(int i=3;i<size;i++)
+        {
+            int cur=max(pre2,pre3)+nums[i];
+            pre3=pre2;
+            pre2=pre1;
+            pre1=cur;
+        }
+        return max(pre1,pre2);
     }
 };
