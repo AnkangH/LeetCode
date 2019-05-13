@@ -24,10 +24,10 @@ public:
             return 0;
         vector<int> dp(n+1,INT_MAX);//n+1个元素，初值均为INT_MAX
         dp[0]=0;//当i-j*j=0时，取0+1
-        for(int i=1;i<=n;i++)
-            for(int j=1;j*j<=i;j++)
+        for(int i=1;i<=n;i++)//更新所有的小于n的值，由这些子问题推出n
+            for(int j=1;j*j<=i;j++)//对于每个n，求所有的k，k=[1,sqrt(n)]
             {
-                dp[i]=min(dp[i],dp[i-j*j]+1);
+                dp[i]=min(dp[i],dp[i-j*j]+1);//这里的1是指dp[i*i],因为i*i自身是平方和，所以最小拆分为1
             }
         return dp[n];
     }
