@@ -1,0 +1,74 @@
+/*
+题目：
+A robot is located at the top-left corner of a m x n grid (marked 'Start' in the diagram below).
+The robot can only move either down or right at any point in time. The robot is trying to reach 
+the bottom-right corner of the grid (marked 'Finish' in the diagram below).
+How many possible unique paths are there?
+Above is a 7 x 3 grid. How many possible unique paths are there?
+Note: m and n will be at most 100.
+Example 1:
+Input: m = 3, n = 2
+Output: 3
+Explanation:
+From the top-left corner, there are a total of 3 ways to reach the bottom-right corner:
+1. Right -> Right -> Down
+2. Right -> Down -> Right
+3. Down -> Right -> Right
+Example 2:
+Input: m = 7, n = 3
+Output: 28
+解析：
+给定一个mxn矩阵，从矩阵左上角出发，每次只能向下或者向右走，共有多少条不同路径可以到达矩阵右下角。
+对于mxn矩阵t，要到达矩阵右下角元素t[m][n],则可以先到达t[m][n]的上一个元素t[m-1][n]或者左一个元素t[m][n-1]。
+从以上两个元素到达t[m][n]都只有一种可能。所以设dp[m][n]为mxn矩阵的路径数量，则有dp[m][n]=dp[m-1][n]+dp[m][n-1].
+初始值，1x1矩阵，起点终点重合，路径只有一条。
+方法一：利用一个二维矩阵，索引从0开始，保存mxn之前的递推结果。
+方法二：优化 因为当前路径数量仅与当前行和上一行有关，所以最小空间复杂度的情况下，可用两个数组表示。
+*/
+
+//方法一 递推结果保存在mxn矩阵
+class Solution {
+public:
+    int uniquePaths(int m, int n) {
+        if(m<1||n<1)
+            return 0;//预处理
+        vector<vector<int>> dp(m,vector<int>(n,0));//递推结果
+        dp[0][0]=1;//起点 1x1矩阵只有一条路径
+        for(int i=0;i<m;i++)
+            for(int j=0;j<n;j++)
+            {
+                if(i-1>=0&&j-1>=0)//行列-1合法，则行-1和列-1结果相加为路径总数
+                    dp[i][j]=dp[i-1][j]+dp[i][j-1];
+                if(i-1>=0&&j-1<0)
+                    dp[i][j]=dp[i-1][j];//否则说明只有一行或者一列，与列-1或行-1路径数相同
+                if(i-1<0&&j-1>=0)
+                    dp[i][j]=dp[i][j-1];
+            }
+        return dp[m-1][n-1];//返回mxn的路径总数
+    }
+};
+
+//方法二
+class Solution {
+public:
+    int uniquePaths(int m, int n) {
+        if(m<1||n<1)
+            return 0;
+        vector<vector<int>> dp(2,vector<int>(n,1));//当前行和上一行
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)//更新当前行
+            {
+                if(i-1>=0&&j-1>=0)
+                    dp[1][j]=dp[0][j]+dp[1][j-1];
+                if(i-1>=0&&j-1<0)
+                    dp[1][j]=dp[0][j];
+                if(i-1<0&&j-1>=0)
+                    dp[1][j]=dp[1][j-1];
+            }
+            for(int j=0;j<n;j++)
+                dp[0][j]=dp[1][j];//更新上一行
+        }
+        return dp[1][n-1];
+    }
+};
