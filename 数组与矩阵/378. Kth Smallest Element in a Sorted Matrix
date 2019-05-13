@@ -1,0 +1,61 @@
+/*
+题目：
+Given a n x n matrix where each of the rows and columns are sorted in ascending order, find the kth smallest element in the matrix.
+Note that it is the kth smallest element in the sorted order, not the kth distinct element.
+Example:
+matrix = [
+   [ 1,  5,  9],
+   [10, 11, 13],
+   [12, 13, 15]
+],
+k = 8,
+return 13.
+Note: 
+You may assume k is always valid, 1 ≤ k ≤ n2.
+解析：
+给定一个二维数组，行列有序。求其中第K小的元素。
+方法一：二分查找，利用数组中最小的数[0][0]和最大的数[m-1][n-1]，对该开始到mid范围进行二分查找，如果范围内比mid小的数值小于k，说明
+第k小的元素在后面，那么增大mid，否则减小mid。
+方法二：遍历数组并排序，返回排序后的数组第k个元素即可。
+那么
+*/
+//方法一
+class Solution {
+public:
+    int kthSmallest(vector<vector<int>>& matrix, int k) {
+        int m=matrix.size();//行数
+        int n=matrix[0].size();//列数
+        int lu=matrix[0][0];//下限
+        int rb=matrix[m-1][n-1];//上限
+        while(lu<=rb)
+        {
+            int mid=lu+(rb-lu)/2;//二分
+            int cnt=0;
+            for(int i=0;i<m;i++)
+                for(int j=0;j<n&&matrix[i][j]<=mid;j++)
+                {
+                    cnt++;//求从数组开始到mid，比mid小的数字个数
+                }
+            if(cnt<k)
+                lu=mid+1;//比mid小的数字<k，说明第k个在后面，lu增大会导致mid增大 多遍历
+            else
+                rb=mid-1;//比mid小的数字大于k，说明第k个在前面，rb减小会导致mid减小 少遍历
+        }
+        return lu;
+    }
+};
+
+//方法二
+class Solution {
+public:
+    int kthSmallest(vector<vector<int>>& matrix, int k) {
+        vector<int> arr;
+        int m=matrix.size();
+        int n=matrix[0].size();
+        for(int i=0;i<m;i++)
+            for(int j=0;j<n;j++)
+                arr.push_back(matrix[i][j]);//构建一维数组
+        sort(arr.begin(),arr.end());//排序 小在前
+        return arr[k-1];//0- 第一小 1-第二小...k-1 第k小
+    }
+};
