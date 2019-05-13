@@ -41,6 +41,6 @@ public:
                 if(i-1<0&&j-1>=0)
                     dp[i][j]=dp[i][j-1]+grid[i][j];//只有一行的情况
             }
-        return dp[m-1][n-1];//返回值
+        return dp[m-1][n-1];
     }
 };
