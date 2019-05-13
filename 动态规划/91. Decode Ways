@@ -1,0 +1,146 @@
+/*
+题目：
+A message containing letters from A-Z is being encoded to numbers using the following mapping:
+'A' -> 1
+'B' -> 2
+...
+'Z' -> 26
+Given a non-empty string containing only digits, determine the total number of ways to decode it.
+Example 1:
+Input: "12"
+Output: 2
+Explanation: It could be decoded as "AB" (1 2) or "L" (12).
+Example 2:
+Input: "226"
+Output: 3
+Explanation: It could be decoded as "BZ" (2 26), "VF" (22 6), or "BBF" (2 2 6).
+解析：
+给定一个10进制数字0-9组成的字符串，按照1->'A',...26->'Z'的解码关系将字符串解码，输出不同解码的数量。
+如 12可以解释为AB 也可以解释为12对应的大写英文字母。
+动态规划法，假设第k位的数字为s（k），解码的方式为dp[k],那么根据s（k）和s（k-1）的不同，有以下:
+
+          0               (非法字符，立即返回0)      s(k)==0, s(k-1)!=1,2     如30
+dp[k]={   dp[k-2]         (s(k)必须与s(k-1)结合)     s(k)==0,s(k-1)=1,2      如10
+          dp[k-1]         (s(k)必须不与s(k-1)结合)   s(k-1)==2,s(k)!=1,2,3,4,5,6 或s(k-1)!=1,2 如31
+          dp[k-2]+dp[k-1] (s(k)可与可不与s(k-1)结合) s(k-1)==1或s(k-1)==2,s(k)==1,2,3,4,5,6   如11
+根据以上推理，遍历字符串，输出数组最后一个元素即可。
+dp[k]中储存的字符串前k+1个字符，其解码方法个数。
+方法二：这里只用了三个变量来递推，所以可以将数组换位三个变量，减小空间复杂度。
+*/
+
+//方法一
+class Solution {
+public:
+    int numDecodings(string s) {
+        if(s.empty())
+            return 0;//预判断 字符串空
+        int size=s.size();
+        if(size==1&&s[0]!='0')
+            return 1;//预判断 单字符且合法
+        if(s[0]=='0')
+            return 0;//预判断 首字符为0 不过字符串长度多少均非法
+        vector<int>dp(size,0);
+        dp[0]=1;//合法字符串，长度为1时，只有一种解码方法
+        char a=s[0];
+        char b=s[1];
+        if(canConnect(a,b)==0)
+            return 0;
+        else if(canConnect(a,b)==1||canConnect(a,b)==3)
+            dp[1]=1;//前2个字符的解码方法数
+        else
+            dp[1]=2;//前2个字符的解码方法数
+        for(int i=2;i<size;i++)
+        {
+            a=s[i-1];//上个字符
+            b=s[i];//当前字符
+            int temp=canConnect(a,b);//判断解码情况
+            if(temp==0)
+                return 0;//非法，直接返回0
+            if(temp==1)
+                dp[i]=dp[i-2];//当前字符必须与前一个字符结合
+            if(temp==2)
+                dp[i]=dp[i-2]+dp[i-1];//可结合可不结合
+            if(temp==3)
+                dp[i]=dp[i-1]; //必须不与前一个字符结合
+        }
+        return dp[size-1];
+    }
+    int canConnect(char a,char b)
+    {
+        if(b=='0')
+        {
+            if(a=='1'||a=='2')
+                return 1;//必须与前面结合 dp[k-2]
+            else
+                return 0;//无效编码       立即返回0
+        }
+        else
+        {
+            if(a=='1')
+                return 2;//可与前面结合也可不结合 dp[k-2]+dp[k-1]
+            else if(a=='2'&& (b-'1')>=0&&(b-'1')<6)
+                return 2;
+            else
+                return 3;//必须不与前面结合 dp[k-1]
+        }
+    }
+};
+
+//方法二
+class Solution {
+public:
+    int numDecodings(string s) {
+        if(s.empty())
+            return 0;
+        int size=s.size();
+        if(size==1&&s[0]!='0')
+            return 1;
+        if(s[0]=='0')
+            return 0;
+        int dp0=1,dp1=0,dp=0;//dp0前两个，dp1前一个，dp当前
+        char a=s[0];
+        char b=s[1];
+        if(canConnect(a,b)==0)
+            return 0;
+        else if(canConnect(a,b)==1||canConnect(a,b)==3)
+            dp1=1;
+        else
+            dp1=2;
+        for(int i=2;i<size;i++)
+        {
+            a=s[i-1];
+            b=s[i];
+            int temp=canConnect(a,b);
+            if(temp==0)
+                return 0;
+            if(temp==1)
+                dp=dp0;
+            if(temp==2)
+                dp=dp0+dp1;
+            if(temp==3)
+                dp=dp1;
+            dp0=dp1;//前两个的值更新为前一个，来递推求和
+            dp1=dp;//同理前一个的值更新为当前
+        }
+        return size==2?dp1:dp;//当size=2时，应返回dp1，否则返回dp
+    }
+    int canConnect(char a,char b)
+    {
+        if(b=='0')
+        {
+            if(a=='1'||a=='2')
+                return 1;//必须与前面结合 dp[k-2]
+            else
+                return 0;//无效编码       立即返回0
+        }
+        else
+        {
+            if(a=='1')
+                return 2;//可与前面结合也可不结合 dp[k-2]+dp[k-1]
+            else if(a=='2'&& (b-'1')>=0&&(b-'1')<6)
+                return 2;
+            else
+                return 3;//必须不与前面结合 dp[k-1]
+        }
+    }
+};
