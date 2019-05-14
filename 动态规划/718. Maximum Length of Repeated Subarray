@@ -1,0 +1,48 @@
+/*
+题目
+Given two integer arrays A and B, return the maximum length of an subarray that appears in both arrays.
+Example 1:
+Input:
+A: [1,2,3,2,1]
+B: [3,2,1,4,7]
+Output: 3
+Explanation: 
+The repeated subarray with maximum length is [3, 2, 1].
+Note:
+1 <= len(A), len(B) <= 1000
+0 <= A[i], B[i] < 100
+解析：
+给定两个数组a，b；求a和b中最长连续相同字串的长度。
+动态规划法。假设dp[i][j]为到a[i]和b[j]时，最长相同子串的长度
+那么有dp[i][j]=dp[i-1][j-1]+1, a[i]==b[j]。不同的话不执行操作，保留原值。
+比如 a=123122 和b=132122
+dp[0][0]=1
+dp[0][1]=0此时还要对b进行遍历，而不能退出当前a的值，因为b之后的值可能与a开头的子串相同。
+因为dp中保存的并不是最大值，不同行之间的dp不相互影响。所以使用一个变量，来储存dp中的最大值。
+*/
+class Solution {
+public:
+    int findLength(vector<int>& a, vector<int>& b) {
+        if(a.empty()||b.empty())
+            return 0;
+        int m=a.size(),n=b.size();
+        int res=0;
+        vector<vector<int>> dp(m,vector<int>(n,0));
+        for(int i=0;i<m;i++)
+            if(a[i]==b[0])
+                dp[i][0]=1;//初值，这里是找a当中和b[0]相同的数字在b中的位置
+        for(int i=0;i<n;i++)
+            if(a[0]==b[i])
+                dp[0][i]=1;//同理 找b中和a[0]相同的索引
+        for(int i=1;i<m;i++)
+            for(int j=1;j<n;j++)
+            {
+                if(a[i]==b[j])
+                {
+                    dp[i][j]=dp[i-1][j-1]+1;//递归表达式
+                    res=max(res,dp[i][j]);//求最大值
+                }
+            }
+        return res;
+    }
+};
