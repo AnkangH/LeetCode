@@ -25,6 +25,8 @@ Output: false
 当size<=i时，如果字典元素等于字符串s前i个字符的后i-size个字符，且有dp[i-size]为true，说明字符串的前i个字符
 可以由字典组成。将前i个字符分为前后两个部分，只有当当前典元素与后部分相同，且前部分可以由字典表示时，前i个字符才
 可由字典表示。
+递推公式 dp[i]=dp[i]||dp[i-size], dict[j]=substr(i-size,size) j=0,1,...,n;i=0,1,2,...,n
+              fasle     ,dict[j]!=substr(i-size,size)
 又字典中有多个元素，且可以重复使用，所以遍历字典，只要有一个元素使dp[i]为true即可。
 如s="leetcode" dict="leet" "code"
 dp[0]=true;
