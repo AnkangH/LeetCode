@@ -1,0 +1,68 @@
+/*
+题目：
+Given a non-empty string s and a dictionary wordDict containing a list of non-empty words, determine if s 
+can be segmented into a space-separated sequence of one or more dictionary words.
+Note:
+The same word in the dictionary may be reused multiple times in the segmentation.
+You may assume the dictionary does not contain duplicate words.
+Example 1:
+Input: s = "leetcode", wordDict = ["leet", "code"]
+Output: true
+Explanation: Return true because "leetcode" can be segmented as "leet code".
+Example 2:
+Input: s = "applepenapple", wordDict = ["apple", "pen"]
+Output: true
+Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+             Note that you are allowed to reuse a dictionary word.
+Example 3:
+Input: s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"]
+Output: false
+解析：
+给定一个字符串s和字典dict，判断能否用字典中元素组成字符串。字典中元素可重复使用。
+动态规划法。假设dp[i]为前i个字符能否用字典元素组成，能为true，不能为false。
+遍历字典，假设当前元素为j，j的大小为size，当size<=i时，才可能使dp[i]为true，即可能组成前i个字符，
+因为字典"abcd"不能拆分，肯定不能组成比它长度小的字符串。
+当size<=i时，如果字典元素等于字符串s前i个字符的后i-size个字符，且有dp[i-size]为true，说明字符串的前i个字符
+可以由字典组成。将前i个字符分为前后两个部分，只有当当前典元素与后部分相同，且前部分可以由字典表示时，前i个字符才
+可由字典表示。
+又字典中有多个元素，且可以重复使用，所以遍历字典，只要有一个元素使dp[i]为true即可。
+如s="leetcode" dict="leet" "code"
+dp[0]=true;
+dp[1],dp[2],dp[3]=false，因为字典中的元素长度都>3
+dp[4]=?
+dict[0]=leet，长度为4<=4，进行判断，s的前4个字符leet的后4个元素为leet，与元素0相同，dp[4]=dp[i-4]=dp[0]=true
+dict[1]=code,长度4<=4,进行判断，s的前4个字符leet的后4个元素为leet，与元素1不同，
+如上所述，有一个元素使得dp[i]为true即可。这里有两种选择 dp[i]=dp[i]||dp[i-size];或if(dp[i-size]) dp[i]=true;
+dp[5]=?
+dict[0]=leet,长度为4<=5，进行判断，s的前5个字符leetc的后4个字符为eetc，不与dict[0]相同
+同理 dict[1]也不满足
+所以dp[5]=false
+dp[6],dp[7]=false
+dp[8]=?
+dict[0]=leet,长度为4<=8,进行判断，s前8个字符的后4个字符为code，与dict[0]不同，不满足
+dict[1]=code,长度为4<=8,进行判断，s前8个字符的后4个字符为code，与dict[0]相同，
+所以dict[8]=dict[8-4]=dict[4]=true
+最后输出dp数组的最后一个元素即可。
+*/
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        if(s.empty()||wordDict.empty())
+            return false;
+        int m=s.size();//字符串字符个数
+        int n=wordDict.size();//字典元素个数
+        vector<bool> dp(m+1,false);//递推结果，dp[i]意为字符串的前i个字符是否可由字典表示
+        dp[0]=true;//初值
+        for(int i=1;i<m+1;i++)//i的范围为1-n，与字符串长度相同，代表字符串前i个字符可否由字典表示
+            for(int j=0;j<n;j++)//j遍历字典
+            {
+                int k=wordDict[j].size();//字典当前元素长度
+                if(k<=i)//字典当前元素长度<i时，才有可能组成前i个字符
+                    if(wordDict[j]==s.substr(i-k,k))//前i个字符，从后向前按照字典元素分为两部分，字典元素与后部分字符相同
+                        //dp[i]=dp[i]||dp[i-k];
+                        if(dp[i-k])//且前部分可由字典表示
+                            dp[i]=true;//前i个字符才可由字典表示
+            }
+        return dp[m];//返回结果
+    }
+};
