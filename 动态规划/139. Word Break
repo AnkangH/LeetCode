@@ -19,12 +19,15 @@ Input: s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"]
 Output: false
 解析：
 给定一个字符串s和字典dict，判断能否用字典中元素组成字符串。字典中元素可重复使用。
-动态规划法。假设dp[i]为前i个字符能否用字典元素组成，能为true，不能为false。
+动态规划法。
+方法一:
+假设dp[i]为前i个字符能否用字典元素组成，能为true，不能为false。
 遍历字典，假设当前元素为j，j的大小为size，当size<=i时，才可能使dp[i]为true，即可能组成前i个字符，
 因为字典"abcd"不能拆分，肯定不能组成比它长度小的字符串。
 当size<=i时，如果字典元素等于字符串s前i个字符的后i-size个字符，且有dp[i-size]为true，说明字符串的前i个字符
 可以由字典组成。将前i个字符分为前后两个部分，只有当当前典元素与后部分相同，且前部分可以由字典表示时，前i个字符才
 可由字典表示。
+时间复杂度O(N*n*k)，N字典长度，n字符串长度，k字典中长度小于n的单词长度的平均值
 递推公式 dp[i]=dp[i]||dp[i-size], dict[j]=substr(i-size,size) j=0,1,...,n;i=0,1,2,...,n
               fasle     ,dict[j]!=substr(i-size,size)
 又字典中有多个元素，且可以重复使用，所以遍历字典，只要有一个元素使dp[i]为true即可。
@@ -45,6 +48,13 @@ dict[0]=leet,长度为4<=8,进行判断，s前8个字符的后4个字符为code�
 dict[1]=code,长度为4<=8,进行判断，s前8个字符的后4个字符为code，与dict[0]相同，
 所以dict[8]=dict[8-4]=dict[4]=true
 最后输出dp数组的最后一个元素即可。
+方法二：
+假设dp[i]为字符串前i个字符可由字典表示。现假设求dp[k]，那么只要dp[1]-dp[k-1]中有一个dp[x]为true,且前k位字符对应除去前x位剩下的字符串在
+字典中可查到，那么dp[k]=true。dp[i]=exist(dp[k]==true&& str(x,k-x) in dict);
+如leetcode dp[0]=true,dp[1]，只有一种情况dp[0]，前1个字符除去前第0个字符为l，在字典中不可查，所以为false
+...
+dp[4]，前4个字符为leet，判断从dp[0]-dp[3]，因为dp[0]=true,又前4个字符除去前0个字符在字典中可查，所以为true。
+构建字典需要O(N)时间复杂度，查字典O(1)复杂度，总的时间复杂度为O(N+n*(n-1)),n为字符串长度。
 */
 class Solution {
 public:
@@ -66,5 +76,24 @@ public:
                             dp[i]=true;//前i个字符才可由字典表示
             }
         return dp[m];//返回结果
+    }
+};
+
+//方法二
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        unordered_map<string,bool> dictMap;
+        int sizeDict=wordDict.size();
+        int sizeStr=s.size();
+        for(int i=0;i<sizeDict;i++)
+            dictMap[wordDict[i]]=true;
+        vector<bool> dp(sizeStr+1,false);
+        dp[0]=true;
+        for(int i=1;i<=sizeStr;i++)//对于每个dp[i]，检查j<i的dp[j]能否令dp[i]为true.
+            for(int j=0;j<i;j++)
+                if(dp[j]&&dictMap.count(s.substr(j,i-j)))
+                    dp[i]=true;
+        return dp[sizeStr];
     }
 };
