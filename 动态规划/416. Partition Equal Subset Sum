@@ -30,30 +30,33 @@ Explanation: The array cannot be partitioned into equal sum subsets.
 class Solution {
 public:
     bool canPartition(vector<int>& nums) {
-        if(nums.empty())
-            return false;
+        int sizeNums=nums.size();
         int sum=0;
-        int size=nums.size();
-        for(int i=0;i<size;i++)
+        for(int i=0;i<sizeNums;i++)
             sum+=nums[i];
-        if(sum%2!=0)
+        if(sizeNums==0||sum%2!=0)
             return false;
-        sum=sum/2;
-        vector<vector<bool>> dp(size+1,vector<bool>(sum+1,false));//dp[i][j]，前i个任选可否和为j
-        //这里0代表从选0个和为sum 所以从n个里选sum，dp应为(size+1)x(sum+1)
-        for(int i=1;i<size+1;i++)
-            dp[i][0]=true;//i个中任选组成0，其中有0或是一个都不选可以和为0，因此为true
-        for(int i=1;i<sum+1;i++)
-            dp[0][i]=false;//0个怎么选和都不可能为i（i>=1），因此false
-        dp[0][0]=true;//0个中选出0可以实现
-        for(int i=1;i<size+1;i++)
-            for(int j=1;j<sum+1;j++)
+        sum/=2;
+        vector<vector<bool>> dp(sizeNums+1,vector<bool>(sum+1,false));
+        for(int i=0;i<=sizeNums;i++)
+                dp[i][0]=true;
+        for(int i=1;i<=sizeNums;i++)
+        {
+            bool cur=false;
+            for(int j=0;j<=sum;j++)
             {
-                if(j>=nums[i-1])
-                    dp[i][j]=(dp[i-1][j]||dp[i-1][j-nums[i-1]]);//j>=nums[i-1]，nums[i-1]可选，因此考虑选i和不选i，只要一个符合即可。
+                if(dp[i-1][j])
+                    cur=true;
                 else
-                    dp[i][j]=dp[i-1][j];//j<nums[i-1]，nums[i-1]必不可选，因此与前i-1个的情况相同。
+                {
+                    if(j>=nums[i-1]&&dp[i-1][j-nums[i-1]])
+                        cur=true;
+                    else
+                        cur=false;
+                }
+                 dp[i][j]=cur;
             }
-        return dp[size][sum];//前size个能否组成sum
+        }
+        return dp[sizeNums][sum];
     }
 };
