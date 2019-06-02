@@ -62,6 +62,6 @@ public:
             //回溯 length是添加的字符串长度 2是符号"->"的长度
             temp = temp.substr(0, temp.size()- length-2);
 	    }
-        return s.size();//返回当前轮添加的字符串长度
+        return s.size();//返回值 当前轮添加的字符串长度
     }
 };
