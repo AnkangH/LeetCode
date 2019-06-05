@@ -8,8 +8,9 @@ Output:
   [1,2,1],
   [2,1,1]
 ]
-解析：DFS搜索。对每个访问过的字符标记。方法一：用一个map记录出现过的序列。因为不使用自定义的key值，所以map无法对vector<int>的key值检索，
-需要将vector<int>转换为string，再进行检索。
+解析：DFS搜索。对于所有可能的排列组合，产生方法都是DFS搜索，但是排除重复排列的方法不同。方法一：用一个map记录出现过的序列。因为不使用自定义的key值，所以map无法对vector<int>的key值检索，
+需要将vector<int>转换为string，再进行检索。方法二：将所有可能的结果放入set中，利用set的互异性，再依次取出。方法三：对于重复的元素，不进行本次dfs搜索。
+综上，方法三的时间复杂度较优，但是与其他方法相比还是太慢。方法二不提供src。
 */
 
 //方法一
@@ -49,5 +50,57 @@ public:
         for(int i=0;i<sizeNums;i++)
             if(!known[i])
                 dfs(res,nums,temp,known,i);//对剩下未读字符进行dfs
+    }
+};
+
+//方法三
+class Solution {
+public:
+    int sizeNums;
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        vector<vector<int>> res;
+        if(nums.empty())
+            return res;
+        int sizeNums=nums.size();
+        unordered_map<int,bool> m1;
+        unordered_map<int,bool>m2;
+        for(int i=0;i<sizeNums;i++)
+        {
+            if(m2.count(nums[i])==0)
+            {
+                m2[nums[i]]=true;
+                m1[i]=true;
+            }
+        }
+        for(int i=0;i<sizeNums;i++)
+        {
+            if(m1.count(i)==1)
+            {
+                vector<bool> known=vector<bool>(sizeNums,false);
+                vector<int>temp;
+                dfs(res,nums,temp,known,i);
+            }
+         }
+        set<vector<int>> auxSet;
+        for(auto p:res)
+            auxSet.emplace(p);
+        res.clear();
+        for(auto p:auxSet)
+            res.push_back(p);
+        return res;
+    }
+    void dfs(vector<vector<int>>& res,vector<int>& nums,vector<int> temp,vector<bool>known,int index)
+    {
+        int sizeNums=nums.size();
+        temp.push_back(nums[index]);
+        known[index]=true;
+        if(temp.size()==nums.size())
+        {
+            res.push_back(temp);
+            return;
+        }
+        for(int i=0;i<sizeNums;i++)
+            if(!known[i])
+                dfs(res,nums,temp,known,i);
     }
 };
