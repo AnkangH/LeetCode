@@ -125,3 +125,90 @@ public:
 	    return res;
     }
 };
+
+
+//edition2 2019/06/15
+class Solution {
+public:
+    int myAtoi(string str) {
+        if(str.empty())
+            return 0;
+        string val=partStr(str);
+        cout<<val<<endl;
+        return str2int(val);
+    }
+    int str2int(string s)//首字符为数字或负号的数字字符串转int
+    {
+        long temp=0;
+        int flag=1;//符号位 
+        if(s[0]=='-')//若首位为'-' 记录负号并将字符串转为纯数字字符串
+        {
+            s.erase(s.begin());
+            flag=-1;
+        }
+        int size=s.size();//处理后纯数字字符串的长度
+        for(int i=0;i<size;i++)//转int
+        {
+            temp*=10;//进位
+            temp+=s[i]-'0';//当前位
+            if(temp>INT_MAX)//溢出处理
+            {
+                if(flag==1)
+                    return INT_MAX;
+                if(flag==-1)
+                    return INT_MIN;
+            }
+        }
+        return int(temp)*flag;
+    }
+    string partStr(string str)//从输入字符串中切割出数字串 可以为'+' '-'或数字开头
+    {
+        int size=str.size();
+        string temp;
+        for(int i=0;i<size;i++)
+        {
+            if(str[i]==' ')//空格不检查
+                continue;
+            else if(str[i]=='+')//检测到首个字符为'+'
+            {
+                for(int j=i+1;j<size;j++)//不记录'+'只记录数字字符串
+                {
+                    if(str[j]-'0'>=0&&str[j]-'0'<=9)
+                        temp+=str[j];
+                    else
+                        return temp;//遇到非数字字符返回
+                    if(j==size-1)//检测到字符串尾 返回
+                        return temp;
+                }
+            }
+            else if(str[i]=='-')//首个字符为'-' 为了保留符号位 保留'-'
+            {
+                temp+='-';
+                for(int j=i+1;j<size;j++)//记录之后的数字字符串
+                {
+                    if(str[j]-'0'>=0&&str[j]-'0'<=9)
+                        temp+=str[j];
+                    else
+                        return temp;//检测到非数字字符 返回
+                    if(j==size-1)//字符串尾 返回
+                        return temp;
+                }
+            }
+            else if(str[i]-'0'>=0&&str[i]-'0'<=9)//纯数字字符串
+            {
+                for(int j=i;j<size;j++)
+                {
+                    if(str[j]-'0'>=0&&str[j]-'0'<=9)
+                        temp+=str[j];
+                    else
+                        return temp;
+                    if(j==size-1)
+                        return temp;
+                }
+            }
+            else
+                return temp;//否则返回空字符串
+        }
+        return temp;//只要字符串按照题目指定的格式输入 这句只为了满足语法 不会执行
+    }
+};
