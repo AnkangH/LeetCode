@@ -46,7 +46,7 @@ public:
     }
 };
 
-//方法二 O(n) 44ms
+//方法二 O(n) 32ms
 class Solution {
 public:
     int removeDuplicates(vector<int>& nums) {
