@@ -14,6 +14,7 @@
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 */
 
+//方法一 O(n*n) 300ms
 class Solution {
 public:
     int removeDuplicates(vector<int>& nums) {
@@ -42,5 +43,25 @@ public:
             }
         }
         return cnt;
+    }
+};
+
+//方法二 O(n) 44ms
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+        int size=nums.size();
+        if(size==0)
+            return 0;
+        int index=1;//不重复数字的索引
+        for(int i=1;i<size;i++)//遍历当前数组的索引
+        {
+            if(nums[i]!=nums[i-1])//当前数字与前一个数字不同 说明在不重复数字中无当前数字
+            {
+                nums[index]=nums[i];//添加到前面的不重复数组中
+                index++;//不重复数字的索引增加 指向下一个待修改的位置
+            }
+        }
+        return index;//index修改的次数也是不重复数字的计数
     }
 };
