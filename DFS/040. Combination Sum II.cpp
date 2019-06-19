@@ -68,3 +68,41 @@ public:
         }
     }
 };
+
+
+// 2019/06/19更新
+class Solution {
+public:
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        int size=candidates.size();
+        vector<vector<int>> res;
+        if(size==0)
+            return res;//空数组 退出
+        sort(candidates.begin(),candidates.end());//排序数组
+        for(int i=0;i<size;i++)
+        {
+            if(i>0&&candidates[i]==candidates[i-1])//重复的首个数字不进行dfs
+                continue;
+            dfs(res,candidates,{},target,i);//以每个数字做为首数字 向后dfs
+        }
+        return res;
+    }
+    void dfs(vector<vector<int>>& res,vector<int>& nums,vector<int> temp,int target,int index)
+    {
+        if(nums[index]>target)//数组均为正数 当前和大于target 必不符 退出
+            return;
+        temp.push_back(nums[index]);//<=  入当前组合
+        if(nums[index]==target)//= 将当前组合放入结果
+        {
+            res.push_back(temp);
+            return;
+        }
+        int size=nums.size();
+        for(int i=index+1;i<size;i++)//对其后的数字进行dfs
+        {
+            if(i>index+1&&nums[i]==nums[i-1])//重复数字只选第一次出现的 其后均不进行dfs 因为会重复
+                continue;
+            dfs(res,nums,temp,target-nums[index],i);
+        }
+    }
+};
