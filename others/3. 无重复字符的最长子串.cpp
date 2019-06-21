@@ -1,3 +1,24 @@
+/*
+给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度。
+示例 1:
+输入: "abcabcbb"
+输出: 3 
+解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+示例 2:
+输入: "bbbbb"
+输出: 1
+解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1。
+示例 3:
+输入: "pwwkew"
+输出: 3
+解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
+     请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/longest-substring-without-repeating-characters
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+*/
+
+//方法一 使用字符串做为滑动窗口
 class Solution {
 public:
     int lengthOfLongestSubstring(string s) {
@@ -32,5 +53,41 @@ public:
                 return i;
         }
         return -1;
+    }
+};
+
+//方法二 使用哈希表作为滑动窗口
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        if(s.empty())
+            return 0;
+        unordered_map<char,int> m;//哈希表滑动窗口 储存字符及其在字符串中的位置
+        m.emplace(s[0],0);//放入字符串首个字符
+        int res=1;//放入首个字符后 初始长度为1
+        int size=s.size();
+        for(int i=1;i<size;i++)//遍历其后字符串每个字符
+        {
+            if(m.count(s[i])==0)//不在滑动窗口中
+            {
+                m.emplace(s[i],i);//放入滑动窗口
+            }
+            else
+            {
+                int index=m.find(s[i])->second;//找出滑动窗口中给字符在字符串中的位置
+                auto p=m.begin();
+                while(p!=m.end())//
+                {
+                    if(p->second<=index)//删除该字符及前面的字符
+                        p=m.erase(p);
+                    else
+                        p++;
+                }
+                m.emplace(s[i],i);//放入当前字符
+            }
+            int sum=m.size();//统计滑动窗口中的字符个数
+            res=max(res,sum);//保存最大长度
+        }
+        return res;
     }
 };
