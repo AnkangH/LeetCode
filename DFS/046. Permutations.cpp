@@ -44,3 +44,39 @@ public:
                 dfs(res,nums,temp,known,i);
     }
 };
+
+// 不使用额外储存空间 通过查询temp中是否有下个要进行dfs的数字 来确定是否要对下个数字进行dfs
+class Solution {
+public:
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<vector<int>> res;
+        if(nums.empty())
+            return res;
+        int size=nums.size();
+        for(int i=0;i<size;i++)
+            dfs(res,nums,{},i);
+        return res;
+    }
+    void dfs(vector<vector<int>>& res,vector<int>& nums,vector<int> temp,int index)
+    {
+        int size=nums.size();
+        temp.push_back(nums[index]);
+        if(temp.size()==size)
+        {
+            res.push_back(temp);//长度满足要求 返回
+            return;
+        }
+        for(int i=0;i<size;i++)
+            if(contain(temp,nums[i]))//不重复数字 进行dfs
+                dfs(res,nums,temp,i);
+                
+    }
+    bool contain(vector<int>nums,int val)//查询当前的排列中是否有某个数字
+    {
+        int size=nums.size();
+        for(int i=0;i<size;i++)
+            if(nums[i]==val)
+                return false;
+        return true;
+    }
+};
