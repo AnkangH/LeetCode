@@ -73,3 +73,40 @@ public:
 	return result;
     }
 };
+
+//  2019/06/21更新
+class Solution {
+public:
+    string addStrings(string num1, string num2) {
+        int size1=num1.size();//num1位数
+        int size2=num2.size();//num2位数
+        string res;
+        int size=0;//最大位数
+        //对齐num1与num2的最低位 不够的前面补'0'
+        if(size1<size2)
+        {
+            res=num2;
+            size=size2;
+            for(int i=size1;i<size2;i++)
+                num1.insert(num1.begin(),'0');
+        }
+        else
+        {
+            res=num1;
+            size=size1;
+            for(int i=size2;i<size;i++)
+                num2.insert(num2.begin(),'0');
+        }
+        int cof=0;//进位标志
+        for(int i=size-1;i>=0;i--)//从低位开始计算
+        {
+            int temp=num1[i]-'0'+num2[i]-'0';//当前位的和
+            temp+=cof;//加进位
+            res[i]=temp%10+'0';//当前位的值
+            cof=temp/10;//更新进位
+        }
+        if(cof!=0)
+            res.insert(res.begin(),cof+'0');//若进位不为0 前面补一位
+        return res;
+    }
+};
