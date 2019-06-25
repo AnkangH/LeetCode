@@ -15,6 +15,7 @@ Given word = "ABCB", return false.
 */
 
 
+//时间复杂度不佳 因为使用传值
 class Solution {
 public:
     bool exist(vector<vector<char>>& board, string word) {
@@ -54,5 +55,41 @@ public:
         }
         else
             return true;
+    }
+};
+
+
+//2019-06-25 更新 所有复用变量使用全局变量 时间复杂度空间复杂度俱佳 36ms（<85%）  9.8m(<99%)
+class Solution {
+public:
+    int m=0,n=0;//矩阵大小
+    int size=0;//单词长度
+    string word;//单词
+    bool exist(vector<vector<char>>& board, string str) {
+        size=str.size();//单词长度赋值
+        m=board.size();//矩阵行数赋值
+        n=board[0].size();//矩阵列数赋值
+        word=str;//单词赋值
+        for(int i=0;i<m;i++)//遍历行
+            for(int j=0;j<n;j++)//遍历列
+                if(board[i][j]==word[0])//当前元素与单词首字母相同
+                    if(dfs(board,i,j,0))//判断当前元素为起始元素 是否有路径等于单词
+                        return true;//有单词路径返回true
+        return false;//没有单词路径返回false
+    }
+    bool dfs(vector<vector<char>>& board,int i,int j,int index)//i,j为矩阵索引；index为单词索引
+    {
+        if(i<0||i>=m||j<0||j>=n||board[i][j]!=word[index])
+            return false;//索引不合法或者当前元素不等于单词当前字母
+        if(index==size-1)
+            return true;//路径上所有字母都与单词对应相同 找到路径
+        char temp=board[i][j];//保存当前字母 以便恢复
+        board[i][j]='*';//修改当前字母防止往回搜索重复使用
+        bool nxt=false;//是否有路径
+        nxt=dfs(board,i+1,j,index+1)||dfs(board,i-1,j,index+1)||
+            dfs(board,i,j+1,index+1)||dfs(board,i,j-1,index+1);//上下左右四个方向搜索
+        if(!nxt)//搜索到不合法
+            board[i][j]=temp;//将所有不合法路径上已修改的字母恢复
+        return nxt;//返回
     }
 };
