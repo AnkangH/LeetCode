@@ -108,7 +108,7 @@ public:
     }
 };
 
-//方法二 2019/06/19更新
+//方法三 2019/06/19更新
 class Solution {
 public:
     vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
