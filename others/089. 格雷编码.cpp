@@ -90,9 +90,9 @@ public:
         for(int i=0;i<numN;i++)
         {
             if(temp&1==1)//第i位为1
-                res.push_back(a-pow(2,i));
+                res.push_back(a-(1<<i));
             else//第i位为0
-                res.push_back(a+pow(2,i));
+                res.push_back(a+(1<<i));
             temp=temp>>1;
         }
         return res;
