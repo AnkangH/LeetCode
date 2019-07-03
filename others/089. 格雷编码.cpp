@@ -26,15 +26,75 @@
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 */
 
-
+//方法一 公式法
 class Solution {
 public:
     vector<int> grayCode(int n) {
-        //g(i)=i^(i/2) dfs n=7时堆栈超了 老实背公式吧...
+        //g(i)=i^(i/2)
         vector<int> res;
         for(int i=0;i<(1<<n);i++)//0~2exp(n)-1
             res.push_back(i^(i>>2));
         return res;
     }
     
+};
+
+
+//方法二 回溯法 注意使用二进制每一位不同的数字来构建枝 这样大大减小规模
+class Solution {
+public:
+    int total=0;
+    int numN=0;
+    vector<int> res;
+    vector<int> grayCode(int n) {
+        if(n==0)
+            return {0};
+        numN=n;//n的数值 为了降低时间复杂度 使用全局变量
+        total=1<<n;//总的数字 2exp(n)个
+        vector<int> temp;
+        vector<bool> known(total,false);
+        dfs(temp,known,0);
+        return res;
+    }
+    bool dfs(vector<int>& temp,vector<bool>& known,int index)
+    {
+        temp.push_back(index);
+        int size=temp.size();
+        if(size==total)//得到一个结果
+        {
+            res=temp;
+            return true;
+        }
+        known[index]=true;//标记已使用该数字
+        vector<int> nxt=help(index);//构建n个枝
+        bool flag=false;
+        for(int i=0;i<numN;i++)
+            if(!known[nxt[i]])//对未使用的枝进行dfs
+            {
+                flag=flag||dfs(temp,known,nxt[i]);
+                if(flag)
+                    return true;//获取一条路径后提前退出
+            }
+        if(!flag)//该路径不符合
+        {
+            known[index]=false;//回溯已读标记
+            temp.pop_back();//回溯路径
+        }
+        return flag;
+        
+    }
+    vector<int> help(int a)//对于整数a和位数n，构建n个二进制每一位不同的数字
+    {
+        vector<int> res;
+        int temp=a;
+        for(int i=0;i<numN;i++)
+        {
+            if(temp&1==1)//第i位为1
+                res.push_back(a-pow(2,i));
+            else//第i位为0
+                res.push_back(a+pow(2,i));
+            temp=temp>>1;
+        }
+        return res;
+    }
 };
