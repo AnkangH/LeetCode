@@ -67,3 +67,49 @@ public:
         preOrder(root->right);//搜索右子树
     }
 };
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool isValidBST(TreeNode* root) {
+        if(root==nullptr)
+            return true;
+        int pre;//前一个节点值
+        bool first=true;//标记首次访问 跳过第一个值的比较
+        stack<TreeNode*> st;//辅助栈
+        TreeNode* cur=root;
+        while(!st.empty()||cur!=nullptr)//迭代版本中序遍历
+        {
+            while(cur!=nullptr)
+            {
+                st.push(cur);
+                cur=cur->left;//左子树全部入栈
+            }
+            TreeNode* temp=st.top();//栈顶元素
+            st.pop();
+            if(first)//首次访问
+            {
+                pre=temp->val;//保存当前值为比较的初始值
+                first=false;//不再保存
+            }
+            else//开始比较过程
+            {
+                if(temp->val<=pre)
+                    return false;//不满足二叉搜索树定义 退出
+                else
+                    pre=temp->val;//更新前一个节点值 继续遍历
+            }
+            cur=temp->right;//访问右子树
+        }
+        return true;
+    }
+};
