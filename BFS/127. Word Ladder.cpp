@@ -1,36 +1,35 @@
 /*
-题目：
-Given two words (beginWord and endWord), and a dictionary's word list, find the length of shortest transformation sequence 
-from beginWord to endWord, such that:
-Only one letter can be changed at a time.
-Each transformed word must exist in the word list. Note that beginWord is not a transformed word.
-Note:
-Return 0 if there is no such transformation sequence.
-All words have the same length.
-All words contain only lowercase alphabetic characters.
-You may assume no duplicates in the word list.
-You may assume beginWord and endWord are non-empty and are not the same.
-Example 1:
-Input:
+给定两个单词（beginWord 和 endWord）和一个字典，找到从 beginWord 到 endWord 的最短转换序列的长度。转换需遵循如下规则：
+每次转换只能改变一个字母。
+转换过程中的中间单词必须是字典中的单词。
+说明:
+如果不存在这样的转换序列，返回 0。
+所有单词具有相同的长度。
+所有单词只由小写字母组成。
+字典中不存在重复的单词。
+你可以假设 beginWord 和 endWord 是非空的，且二者不相同。
+示例 1:
+输入:
 beginWord = "hit",
 endWord = "cog",
 wordList = ["hot","dot","dog","lot","log","cog"]
-Output: 5
-Explanation: As one shortest transformation is "hit" -> "hot" -> "dot" -> "dog" -> "cog",
-return its length 5.
-Example 2:
-Input:
+输出: 5
+解释: 一个最短转换序列是 "hit" -> "hot" -> "dot" -> "dog" -> "cog",
+     返回它的长度 5。
+示例 2:
+输入:
 beginWord = "hit"
 endWord = "cog"
 wordList = ["hot","dot","dog","lot","log"]
-Output: 0
-Explanation: The endWord "cog" is not in wordList, therefore no possible transformation.
-解析：
-BFS. 无向图(god->got,got->god)的单源(beginWord)无权(任意边等长度)最短路径(beginWord->endWord)问题。构造图时，若遍历字典，对每个单词判断字典剩余的单词中
-有哪些是其邻接节点的话，时间复杂度O(N*N)，实际上在处理到33个case时就已经超时了。而应该对每个字典单词，通过修改每一位（'a'-'z'),判断修改
-后的单词是否在字典中。时间复杂度O(N*26)，通过所有case.邻接表构造好后，按照层序遍历即可，每个节点只访问一次，当访问到最终节点时，最终节点的
-层序即为最短路径。
+输出: 0
+解释: endWord "cog" 不在字典中，所以无法进行转换。
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/word-ladder
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 */
+
+
+//每个单词的邻接表采用vector保存 
 class Solution {
 public:
 int ladderLength(string beginWord, string endWord, vector<string>& wordList)
@@ -108,4 +107,64 @@ int ladderLength(string beginWord, string endWord, vector<string>& wordList)
 	}
 	return 0;
 }
+};
+
+
+//2019-07-06更新  每个单词的邻接表使用哈希表保存
+class Solution {
+public:
+    unordered_map<string,bool> dict;//保存字典的哈希表
+    unordered_map<string,unordered_map<string,bool>> ladder;//每个单词的邻接表
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        for(auto p:wordList)
+            dict[p]=true;//构建字典中每个单词的哈希表
+        if(dict.count(endWord)==0)
+            return 0;//终点不在字典中 返回0
+        for(auto p:wordList)
+            ladder[p]=generateTree(p);//生成每个单词的邻接表
+        ladder[beginWord]=generateTree(beginWord);//生成初始单词的邻接表
+        queue<string> q;//BFS辅助队列
+        q.push(beginWord);//初始单词入队列 作为起点
+        unordered_map<string,bool> exist;//因为是无向图 所以记录当前遍历的单词 防止重复使用
+        int res=1;//记录层数
+        while(!q.empty())
+        {
+            int size=q.size();//当前层的节点数
+            for(int i=0;i<size;i++)//遍历每个节点
+            {
+                string temp=q.front();//当前节点
+                if(temp==endWord)
+                    return res;//找到终点单词 返回当前层数
+                q.pop();
+                auto p=ladder.find(temp)->second;//获取当前单词的词梯
+                for(auto pp:p)//遍历词梯的每个单词
+                {
+                    if(exist.count(pp.first)==0)//未访问
+                    {
+                        q.push(pp.first);//入队列
+                        exist[pp.first]=true;//标记已访问
+                    }
+                }
+            }
+            res++;//层数更新
+        }
+        return 0;
+    }
+    unordered_map<string,bool> generateTree(string word)
+    {
+        unordered_map<string,bool> d;
+        int size=word.size();//单词的字母个数
+        for(int i=0;i<size;i++)//遍历单词的每个字母
+            for(int j=0;j<26;j++)//对当前字母使用25个字母代替
+            {
+                if(j+'a'!=word[i])//相同单词不再使用
+                {
+                    string temp=word;//构造不同单词
+                    temp[i]='a'+j;//修改对应字母
+                    if(dict.count(temp)!=0)//当前单词在字典中
+                        d[temp]=true;//放入当前单词的词梯
+                }
+            }
+        return d;
+    }
 };
