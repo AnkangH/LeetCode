@@ -18,17 +18,15 @@ class Solution {
 public:
     int maxProduct(vector<int>& nums) {
         int n=nums.size();
-        vector<vector<int>> dp(2,vector<int>(n,0));
-        dp[0][0]=nums[0];//最小乘积初始值
-        dp[1][0]=nums[0];//最大乘积初始值
-        int res=dp[1][0];
+        int curMax=nums[0],curMin=nums[0];//前i个的最大和最小连续乘积
+        int res=nums[0];//最终结果 保存最大乘积
         for(int i=1;i<n;i++)
         {
-            int a=dp[0][i-1]*nums[i];
-            int b=dp[1][i-1]*nums[i];//a和b是连续乘积的最大和最小值
-            dp[0][i]=min(nums[i],min(a,b));//若nums[i]为最大或最小 那么意味着从i开始再向后找子序列
-            dp[1][i]=max(nums[i],max(a,b));
-            res=max(res,dp[1][i]);//保留最大乘积
+            int a=curMax*nums[i];//前i-1个的最大乘积*当前值
+            int b=curMin*nums[i];//前i-1个的最小乘积*当前值
+            curMax=max(nums[i],max(a,b));//用三者的最大值更新当前最大值
+            curMin=min(nums[i],min(a,b));//用三者的最小值更新当前最小值
+            res=max(res,curMax);//保存最大乘积
         }
         return res;
     }
