@@ -124,3 +124,81 @@ public:
         return st.top();//返回栈顶计算结果
     }
 };
+
+
+
+//不使用标准解法 
+class Solution {
+public:
+    //bool has=false;
+    int calculate(string s) {
+        vector<string> str;
+        str=str2str(s);//分割
+        stack<string> st;//利用栈来解决括号
+        for(auto p:str)
+        {
+            if(p!=")")
+                st.push(p);//非右括号 直接入栈
+            else//左括号
+            {
+                vector<string> temp;//保存一个没有括号的运算表达式
+                while(st.top()!="(")//直到左括号
+                {
+                    temp.push_back(st.top());//当前放入表达式
+                    st.pop();//出栈
+                }
+                st.pop();//左括号出栈
+                reverse(temp.begin(),temp.end());//逆序
+                st.push(to_string(com(temp)));//计算结果放入栈中
+            }
+        }
+        vector<string> temp;//对栈中剩余没有括号的部分计算
+        while(!st.empty())
+        {
+            temp.push_back(st.top());
+            st.pop();
+        }
+        reverse(temp.begin(),temp.end());//逆序
+        return com(temp);//计算
+    }
+    vector<string> str2str(string s)//切分输入的表达式为数字 左右括号 运算符
+    {
+        vector<string> res;
+        string temp;
+        for(auto p:s)
+        {
+            if(p==' ')
+                continue;//跳过空格
+            else if(p=='('||p==')'||p=='+'||p=='-')//遇到运算符进行切割
+            {
+                if(!temp.empty())
+                    res.push_back(temp);//放入上个字符串
+                temp.clear();
+                temp+=p;
+                res.push_back(temp);//放入当前字符串
+                temp.clear();//准备继续更新
+            }
+            else
+                temp+=p;//放入当前字符串
+        }
+        if(!temp.empty())
+            res.push_back(temp);//最后temp非空 也要放入
+        return res;
+    }
+    int com(vector<string> s)//计算一个没有括号的加法减法表达式
+    {
+        int res=0;
+        int flag=1;
+        for(auto p:s)
+        {
+            if(p!="+"&&p!="-")
+                res+=flag*atoi(p.c_str());
+            else if(p=="-")
+                flag=-1;
+            else
+                flag=1;
+                
+        }
+        return res;
+    }
+};
