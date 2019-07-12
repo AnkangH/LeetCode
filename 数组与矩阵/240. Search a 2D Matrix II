@@ -1,10 +1,9 @@
 /*
-题目：
-Write an efficient algorithm that searches for a value in an m x n matrix. This matrix has the following properties:
-Integers in each row are sorted in ascending from left to right.
-Integers in each column are sorted in ascending from top to bottom.
-Example:
-Consider the following matrix:
+编写一个高效的算法来搜索 m x n 矩阵 matrix 中的一个目标值 target。该矩阵具有以下特性：
+每行的元素从左到右升序排列。
+每列的元素从上到下升序排列。
+示例:
+现有矩阵 matrix 如下：
 [
   [1,   4,  7, 11, 15],
   [2,   5,  8, 12, 19],
@@ -12,33 +11,31 @@ Consider the following matrix:
   [10, 13, 14, 17, 24],
   [18, 21, 23, 26, 30]
 ]
-Given target = 5, return true.
-Given target = 20, return false.
-解析：
-给定一个二维矩阵，数值随行标增大而增大，随列表增大而增大。给定一个数字，判断矩阵中是否有该数字。
-因为矩阵随列标增大而增大，所以每行的最后一个元素是这一行中最大的数字，随行标增大而增大，说明每一列的数字中，
-最下面的最大。
-用双指针法，一个指针为列标，一个指针为行标。先通过每一行最后一个元素（该行最大）判断元素k在哪一行，再去这一行搜索，
-如果小则往下（下面的数大）搜索，如果大则往左（左侧的数小）搜索。
+给定 target = 5，返回 true。
+给定 target = 20，返回 false。
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/search-a-2d-matrix-ii
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 */
+
+
 class Solution {
 public:
     bool searchMatrix(vector<vector<int>>& matrix, int target) {
-        if(matrix.empty()||matrix[0].empty())
-            return false;//预判断
+        if(matrix.empty())
+            return false;//边界条件 矩阵空直接返回false
         int m=matrix.size();//行数
         int n=matrix[0].size();//列数
-        int i=0,j=n-1;//j从最后一个开始，保证是每一行的最大一个
-        while(i<m&&j>=0)
+        int l=0,r=n-1;//右上角点 从此出发根据matrix和target的大小关系有唯一对应移动方向
+        while(l<m&&r>=0)
         {
-            int temp=matrix[i][j];//当前值
-            if(temp==target)
-                return true;//相等说明检索到
-            else if(temp<target)
-                i++;//如果当前值小于目标值，向下搜索
+            if(matrix[l][r]==target)
+                return true;//找到 返回true
+            else if(matrix[l][r]<target)
+                l++;//当前值较小 向下移动
             else
-                j--;//如果当前值大于目标值，向左搜索
+                r--;//当前值较大 向左移动
         }
-        return false;//循环结束未找到，返回false
+        return false;//未搜索到
     }
 };
