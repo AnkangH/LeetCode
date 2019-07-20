@@ -18,16 +18,6 @@ wordList = ["hot","dot","dog","lot","log","cog"]
   ["hit","hot","dot","dog","cog"],
   ["hit","hot","lot","log","cog"]
 ]
-示例 2:
-输入:
-beginWord = "hit"
-endWord = "cog"
-wordList = ["hot","dot","dog","lot","log"]
-输出: []
-解释: endWord "cog" 不在字典中，所以不存在符合要求的转换序列。
-来源：力扣（LeetCode）
-链接：https://leetcode-cn.com/problems/word-ladder-ii
-著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 */
 
 
