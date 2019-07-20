@@ -8,20 +8,10 @@
   2->6
 ]
 输出: 1->1->2->3->4->4->5->6
-来源：力扣（LeetCode）
-链接：https://leetcode-cn.com/problems/merge-k-sorted-lists
-著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 */
 
 
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
+//方法1 多个节点比较 取最小节点方法 
 class Solution {
 public:
     ListNode* mergeKLists(vector<ListNode*>& lists) {
@@ -60,5 +50,38 @@ public:
             if(lists[i]!=nullptr)
                 return false;
         return true;
+    }
+};
+
+
+//方法2 堆排序方法
+class Solution {
+public:
+    struct cmp
+    {
+        bool operator() (ListNode* a, ListNode* b)
+        {
+            return a->val>b->val;//堆的大顶小顶与比较函数相反 小顶堆使用>
+        }
+    };
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        priority_queue<ListNode*,vector<ListNode*>,cmp> stack;//小顶堆
+        for(auto p:lists)
+        {
+            if(p!=nullptr)//防止空链表 因为nullptr未定义比较函数
+                stack.push(p);//放入链表头
+        }
+        ListNode* res=new ListNode(1);//新链表头
+        ListNode* cur=res;//构建新链表的当前头
+        while(!stack.empty())//堆中所有节点
+        {
+            auto temp=stack.top();//当前节点
+            stack.pop();//出堆
+            cur->next=temp;//放入新链表
+            cur=cur->next;//新链表当前头后移
+            if(temp->next!=nullptr)
+                stack.push(temp->next);//因为放入的是next 所以需要检查next是否为nullptr
+        }
+        return res->next;//返回新链表头即可
     }
 };
