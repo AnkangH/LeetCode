@@ -16,6 +16,7 @@
 */
 
 
+//循环判断能否整除3
 class Solution {
 public:
     bool isPowerOfThree(int n) {
@@ -28,5 +29,16 @@ public:
             n/=3;
         }
         return true;//除以3一直到1 是3的幂
+    }
+};
+
+
+//O(1)时间复杂度写法
+class Solution {
+public:
+    bool isPowerOfThree(int n) {
+        if(n<=0)
+            return false;
+        return 1162261467%n==0?true:false;//32位int型范围内最大的3的幂 3只有一个质因数3（除1外）
     }
 };
