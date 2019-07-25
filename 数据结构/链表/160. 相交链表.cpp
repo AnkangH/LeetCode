@@ -1,6 +1,5 @@
 /*
 编写一个程序，找到两个单链表相交的起始节点。
-
 注意：
 如果两个链表没有交点，返回 null.
 在返回结果后，两个链表仍须保持原有的结构。
@@ -12,39 +11,25 @@
 */
 
 
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
 class Solution {
 public:
     ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
-        ListNode* a=headA;
-        ListNode* b=headB;
-        while(a!=nullptr||b!=nullptr)//最后如果无交点 那么a和b一起停在nullptr
+        if(headA==nullptr||headB==nullptr)
+            return nullptr;
+        ListNode* pa=headA;
+        ListNode* pb=headB;
+        while(pa!=nullptr||pb!=nullptr)//走的次数一样 所以最后都停在nullptr
         {
-            if(a==b)//交点 要求a->val==b->val &&a->next==b->next
-            {
-                cout<<a->val<<b->val<<endl;
-                return a;
-            }
-            else  //先判断是否到达终点 若在后面判断 则无法退出while循环
-            {
-                //每轮a和b只能有一次移动 若不等于nullptr 向后 否则去遍历另外一个链表
-                if(a==nullptr)
-                    a=headB;//a到达a的终点，再去遍历b
-                else
-                    a=a->next;//a向后遍历
-                if(b==nullptr)//
-                    b=headA;//b到达b的终点 再去遍历a
-                else
-                    b=b->next;//b向后遍历
-            }
+            if(pa==pb)
+                return pa;//判断是否相同 相同代表有交点
+            if(pa==nullptr)
+                pa=headB;
+            else
+                pa=pa->next;//每次pa只移动一次 
+            if(pb==nullptr)
+                pb=headA;
+            else pb=pb->next;//每轮pb只移动一次
         }
-        return nullptr;//无交点
+        return nullptr;//没有交点
     }
 };
