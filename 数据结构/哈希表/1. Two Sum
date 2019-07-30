@@ -1,54 +1,26 @@
 /*
-题目：
-Given an array of integers, return indices of the two numbers such that they add up to a specific target.
-You may assume that each input would have exactly one solution, and you may not use the same element twice.
-Example:
-Given nums = [2, 7, 11, 15], target = 9,
-Because nums[0] + nums[1] = 2 + 7 = 9,
-return [0, 1].
-解析：对于每一个元素i，检索剩余元素与其的和，或与target的差
+给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。
+你可以假设每种输入只会对应一个答案。但是，你不能重复利用这个数组中同样的元素。
+示例:
+给定 nums = [2, 7, 11, 15], target = 9
+因为 nums[0] + nums[1] = 2 + 7 = 9
+所以返回 [0, 1]
 */
-//方法一 BruteForce 时间复杂度差
+
+
+//时间复杂度O(N)
 class Solution {
 public:
     vector<int> twoSum(vector<int>& nums, int target) {
-        int size=nums.size();
-        vector<int>res;
-        for(int i=0;i<size;i++)
-        { 
-            for(int j=i+1;j<size;j++)
-            {
-                if(nums[i]+nums[j]==target)
-                {
-                    res.push_back(i);
-                    res.push_back(j);
-                    break;
-                }
-            }
-            if(!res.empty())
-                break;
-        }
-        return res;
-    }
-};
-//方法二 哈希表
-class Solution {
-public:
-    vector<int> twoSum(vector<int>& nums, int target) {
-        map<int,int> m;//创建表
-        vector<int>res;
-        int size=nums.size();
-        for(int i=0;i<size;i++)
+        unordered_map<int,int> dict;
+        int n=nums.size();
+        for(int i=0;i<n;i++)
         {
-            auto x=m.find(target-nums[i]);//在已经创建的表里寻找target-nums[i]，若找到说明和为该两个值
-            if(x!=m.end())//找不到则迭代器指针指向x=m.end()
-            {
-                res.push_back(x->second);//迭代器x有两个成员<first,second>对应<key,value>
-                res.push_back(i);
-                break;
-            }
-            m.insert(pair<int,int>(nums[i],i));//这里key为数组元素的值，value为索引
+            if(dict.count(target-nums[i])==0)
+                dict[nums[i]]=i;//不构成两数之和 放入哈希表
+            else
+                return {i,dict.find(target-nums[i])->second};//构成两数之和 返回该组合
         }
-        return res;
+        return {};
     }
 };
