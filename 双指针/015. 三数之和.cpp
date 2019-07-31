@@ -105,3 +105,55 @@ public:
 };
 
 
+//双指针 移动指针去重
+class Solution {
+public:
+    vector<vector<int>> res;
+    int n;
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        n=nums.size();
+        if(n<3)
+            return res;
+        sort(nums.begin(),nums.end());
+        for(int i=0;i<n;i++)
+        {
+            if(i>0&&nums[i]==nums[i-1])
+                continue;
+            twoSum(nums,i);
+        }
+        return res;
+    }
+    void twoSum(vector<int>& nums,int index)
+    {
+        int target=-nums[index];
+        int l=index+1;
+        int r=n-1;
+        while(l<r)
+        {
+            while(l>index+1&&nums[l]==nums[l-1])//跳过重复组合
+            {
+                l++;
+                if(l==r)
+                    return;
+            }
+            while(r<n-1&&nums[r]==nums[r+1])//跳过重复组合
+            {
+                r--;
+                if(l==r)
+                    return;
+            }
+            int cur=nums[l]+nums[r];
+            if(cur<target)
+                l++;
+            else if(cur>target)
+                r--;
+            else
+            {
+                res.push_back({nums[index],nums[l],nums[r]});
+                l++;
+                r--;
+            }
+        }
+    }
+};
+
