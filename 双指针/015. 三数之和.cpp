@@ -7,55 +7,101 @@
   [-1, 0, 1],
   [-1, -1, 2]
 ]
-来源：力扣（LeetCode）
-链接：https://leetcode-cn.com/problems/3sum
-著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 */
 
+
+//双指针解法 判断当前组合是否重复
 class Solution {
 public:
+    int n;
+    vector<int> last;//保留上一个组合
+    vector<vector<int>> res;//可能组合
     vector<vector<int>> threeSum(vector<int>& nums) {
-        int size=nums.size();
-        vector<vector<int>> res;
-        if(size<3)
-            return res;
-        sort(nums.begin(),nums.end()); 
-        for(int i=0;i<size;i++)
+        n=nums.size();
+        if(n<3)
+            return res;//数字数目小于3 返回空
+        sort(nums.begin(),nums.end());//排序
+        for(int i=0;i<n;i++)
         {
             if(i>0&&nums[i]==nums[i-1])
-                continue;//相同的数字不再求两数之和 因为肯定与之前的重复
-            int target=-nums[i];//两数之和
-            int l=i+1,r=size-1;//左右指针
-            while(l<r)
-            {
-                bool flag=false;//记录当前值与上一个值是否相同 
-                if(l>i+1&&nums[l]==nums[l-1])//判断左指针当前值是否重复
-                {
-                    l++;
-                    flag=true;
-                }
-                if(r<size-1&&nums[r]==nums[r+1])//判断右指针是否重复
-                {
-                    r--;
-                    flag=true;
-                }
-                if(l>=r)
-                    break;//判断时l++，r--可能提前到达循环结束条件 若不退出 下面会数组越界
-                if(flag)
-                    continue;//若左右指针任意一个与上一个值重复 跳过本轮判断
-                if(nums[l]+nums[r]<target)
-                    l++;//两数之和小于目标值 左指针向右移动 增大和
-                else if(nums[l]+nums[r]>target)
-                    r--;//两数之和大于目标值 右指针向左移动 减小和
-                else
-                {
-                    res.push_back({nums[i],nums[l],nums[r]});//因为数组有序 又l<r;l=i+1,所以i<l 所以按照索引升序即可
-                    l++;//左指针移动
-                    r--;//右指针移动
-                }
-                
-            }
+                continue;//相同数字的组合相同 跳过
+            twoSum(nums,i);
         }
         return res;
     }
+    void twoSum(vector<int>&nums,int index)//寻找两数之和等于-nums[index]
+    {
+        int target=-nums[index];//当前目标值
+        int l=index+1,r=n-1;//向后查找 跳过一些重复值
+        while(l<r)
+        {
+            int cur=nums[l]+nums[r];
+            if(cur<target)
+                l++;
+            else if(cur>target)
+                r--;
+            else
+            {
+                vector<int> cur={nums[index],nums[l],nums[r]};//当前组合
+                if(res.empty()||!isSameVector(last,cur))//组合为空或者不与上一个组合相同
+                {
+                    res.push_back(cur);//放入组合
+                    last=cur;//更新上一个组合
+                }
+                l++;
+                r--;
+            }
+        }
+    }
+    bool isSameVector(vector<int>& a,vector<int>& b)//判断两个三数组合是否相同
+    {
+        if(a[0]==b[0]&&a[1]==b[1]&&a[2]==b[2])
+            return true;
+        return false;
+    }
 };
+
+
+//双指针解法  使用set将重复组合删去
+class Solution {
+public:
+    int n;
+    set<vector<int>> s;//集合  只保留不重复组合
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> res;
+        n=nums.size();
+        if(n<3)
+            return res;//数组个数小于3 退出
+        sort(nums.begin(),nums.end());//排序
+        for(int i=0;i<n;i++)
+        {
+            if(i>0&&nums[i]==nums[i-1])
+                continue;
+            twoSum(nums,i);//对当前数字寻找两数之和
+        }
+        for(auto p:s)
+            res.push_back(p);//从集合中取出所有互异集合
+        return res;
+    }
+    void twoSum(vector<int>&nums,int index)//寻找两数之和=-nums[index]
+    {
+        int target=-nums[index];
+        int l=index+1,r=n-1;
+        while(l<r)
+        {
+            int cur=nums[l]+nums[r];
+            if(cur<target)
+                l++;
+            else if(cur>target)
+                r--;
+            else
+            {
+                s.insert({nums[index],nums[l],nums[r]});//可能组合放入集合中
+                l++;
+                r--;
+            }
+        }
+    }
+};
+
+
