@@ -29,52 +29,39 @@ public:
             course[i]=i;//课程序号
         vector<vector<int>> ad(numCourses);//邻接表 先修课程到后修课程
         vector<int> inLines(numCourses,0);//每个课程的入度
-        vector<bool> known(numCourses,false);//该课程是否已拓扑排序
         for(auto p:prerequisites)
         {
             ad[p[1]].push_back(p[0]);//a b代表b->a的边
             inLines[p[0]]++;//a的入度+1
         }
         queue<int> q;//辅助队列
+        int res=0;
         for(int i=0;i<numCourses;i++)
-        {
             if(inLines[i]==0)
-            {
                 q.push(i);//入度为0的课程入队列
-                known[i]=true;//标记已有序
-            }
-        }
         while(!q.empty())//继续拓扑排序
         {
             int cur=q.front();//当前课程
             q.pop();
+            res++;
             auto p=ad[cur];//后修课程
             for(auto pp:p)//遍历每个后修课程
             {
                 inLines[pp]--;//删除该边 即后修课程的入度-1 因为当前节点唯一访问 所以不需要删除邻接表
-                if(inLines[pp]==0&&known[pp]==false)//删除边后 该节点的入度为0且未在拓扑排序中
-                {
+                if(inLines[pp]==0)//删除边后 该节点的入度为0且未在拓扑排序中
                     q.push(pp);//入队列
-                    known[pp]=true;//标记已有序
-                }
             }
         }
-        for(auto p:known)
-            if(!p)
-                return false;//某个课程无序 说明无法拓扑排序
-        return true;//拓扑有序
+        return res==numCourses?true:false;
     }
 };
 
 
-//使用自定义顶点结构体 入度 邻接表 是否已读都是顶点的属性
 class Solution {
 public:
     struct Vertex
     {
-        //int index;//数组i代表顶点的序号 因此不需额外变量
         int inCnt=0;//顶点的入度
-        bool known=false;//顶点在拓扑排序中是否已读
         vector<int> ad;//邻接表
     };
     bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
@@ -86,30 +73,21 @@ public:
         }
         queue<int> q;//辅助队列 使用序号进行bfs即可
         for(int i=0;i<numCourses;i++)
-        {
             if(course[i].inCnt==0)
-            {
                 q.push(i);//入度为0的顶点入队列
-                course[i].known=true;//标记已读
-            }
-        }
+        int res=0;
         while(!q.empty())
         {
             int cur=q.front();//当前顶点
+            res++;//记录拓扑有序的数字个数
             q.pop();
             for(auto p:course[cur].ad)//邻接顶点
             {
                 course[p].inCnt--;//邻接顶点的入度-1
-                if(course[p].inCnt==0&&!course[p].known)//邻接顶点的入度为0且未访问
-                {
+                if(course[p].inCnt==0)//邻接顶点的入度为0且未访问
                     q.push(p);//放入队列
-                    course[p].known=true;//标记已读
-                }
             }
         }
-        for(auto p:course)
-            if(!p.known)
-                return false;//有未读顶点 说明无拓扑排序
-        return true;//否则返回有序
+        return res==numCourses? true:false;
     }
 };
