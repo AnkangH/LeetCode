@@ -20,6 +20,7 @@
 */
 
 
+//不使用自定义顶点结构
 class Solution {
 public:
     bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
@@ -62,5 +63,53 @@ public:
             if(!p)
                 return false;//某个课程无序 说明无法拓扑排序
         return true;//拓扑有序
+    }
+};
+
+
+//使用自定义顶点结构体 入度 邻接表 是否已读都是顶点的属性
+class Solution {
+public:
+    struct Vertex
+    {
+        //int index;//数组i代表顶点的序号 因此不需额外变量
+        int inCnt=0;//顶点的入度
+        bool known=false;//顶点在拓扑排序中是否已读
+        vector<int> ad;//邻接表
+    };
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<Vertex> course(numCourses);
+        for(auto p:prerequisites)
+        {
+            course[p[1]].ad.push_back(p[0]);//邻接表
+            course[p[0]].inCnt++;//入度+1
+        }
+        queue<int> q;//辅助队列 使用序号进行bfs即可
+        for(int i=0;i<numCourses;i++)
+        {
+            if(course[i].inCnt==0)
+            {
+                q.push(i);//入度为0的顶点入队列
+                course[i].known=true;//标记已读
+            }
+        }
+        while(!q.empty())
+        {
+            int cur=q.front();//当前顶点
+            q.pop();
+            for(auto p:course[cur].ad)//邻接顶点
+            {
+                course[p].inCnt--;//邻接顶点的入度-1
+                if(course[p].inCnt==0&&!course[p].known)//邻接顶点的入度为0且未访问
+                {
+                    q.push(p);//放入队列
+                    course[p].known=true;//标记已读
+                }
+            }
+        }
+        for(auto p:course)
+            if(!p.known)
+                return false;//有未读顶点 说明无拓扑排序
+        return true;//否则返回有序
     }
 };
