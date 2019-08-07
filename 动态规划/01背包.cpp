@@ -4,7 +4,7 @@
 
 
 //使用二维数组进行递推
-int maxValueOf01Bag(int n, vector<pair<int, int>> goods)
+vector<int> maxValueOf01Bag1(int n, vector<pair<int, int>> goods)
 {
 	int m = goods.size();
 	vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));//dp[i][j] 前i件物品重量为j时的最大价值 因为有0 所以从1到m和n
@@ -17,11 +17,12 @@ int maxValueOf01Bag(int n, vector<pair<int, int>> goods)
 			else
 				dp[i][j] = dp[i - 1][j];
 		}
-	return dp[m][n];
+	return dp[m];
 }
 
 
-vector<int> test(int n, vector<pair<int, int>> goods)//使用两个一维数组递推
+//使用两个一维数组递推
+vector<int> maxValueOf01Bag2(int n, vector<pair<int, int>> goods)//使用两个一维数组递推
 {
 	int m = goods.size();
 	vector<int> pre(n + 1, 0);//递推的上一行
@@ -37,5 +38,18 @@ vector<int> test(int n, vector<pair<int, int>> goods)//使用两个一维数组�
 		}
 		pre = res;//更新上一行
 	}
+	return res;
+}
+
+
+//使用一个一维数组进行递推
+vector<int> maxValueOf01Bag3(int n, vector<pair<int, int>> goods)
+{
+	int m = goods.size();
+	vector<int> res(n + 1, 0);
+	for (int i = 1; i <= m; i++)//前i个货物
+		for (int j = n; j >= 1; j--)//箱子总重量为j时的最大价值
+			if (goods[i - 1].second <= j)//初始时 res[j]即dp[i-1][j] 使用res[j-k]更新 所以从后向前更新 使未更新的值保持上个状态 
+				res[j] = max(res[j], res[j - goods[i - 1].second] + goods[i - 1].first);//使用第i个货物和不使用第 
 	return res;
 }
