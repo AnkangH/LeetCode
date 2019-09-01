@@ -17,44 +17,45 @@
 从左上角到右下角一共有 2 条不同的路径：
 1. 向右 -> 向右 -> 向下 -> 向下
 2. 向下 -> 向下 -> 向右 -> 向右
-来源：力扣（LeetCode）
-链接：https://leetcode-cn.com/problems/unique-paths-ii
-著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 */
 
 
 class Solution {
 public:
-    int uniquePathsWithObstacles(vector<vector<int>>& g) {
-        int m=g.size();
-        int n=g[0].size();
-        vector<vector<long>> dp(m,vector<long>(n,0));
-        if(g[0][0]==0)//起点不是障碍物
-            dp[0][0]=1;
-        else
-            return 0;//起点是障碍物 到右下角路径数一定为0
-        for(int i=0;i<m;i++)
-            for(int j=0;j<n;j++)
+    int uniquePathsWithObstacles(vector<vector<int>>& grid) {
+        int m=grid.size();
+        int n=grid[0].size();
+        if(grid.empty()||grid[0][0]==1)//矩阵为空 或者起点为障碍物 路径数为0
+            return 0;
+        vector<vector<int>> dp(m,vector<int>(n,0));//从grid[0][0]到grid[i][j]的最大路径数
+        dp[0][0]=1;
+        for(int i=1;i<n;i++)//第一行 只能由grid[0][0]到达 路径最大数为1
+        {
+            if(grid[0][i]==0)
+                dp[0][i]=1;
+            else
+                break;
+        }
+        for(int i=1;i<m;i++)//第一列 只能由grid[0][0]到达 路径最大数为1
+        {
+            if(grid[i][0]==0)
+                dp[i][0]=1;
+            else
+                break;
+        }
+        for(int i=1;i<m;i++)
+            for(int j=1;j<n;j++)
             {
-                if(i==0&&j==0)
-                    continue;//跳过dp[0][0]
-                if(g[i][j]==1)//障碍物
+                if(grid[i][j]==1)
+                    dp[i][j]=0;
+                else
                 {
-                    dp[i][j]=0;//可达路径为0
-                    continue;//跳过下面语句
+                    if(INT_MAX-dp[i][j-1]<dp[i-1][j])
+                        dp[i][j]=0;//自底向上的递推 其中某些dp[i][j]不是dp[m-1][n-1]需要的 根据int范围判断
+                    else
+                        dp[i][j]=dp[i][j-1]+dp[i-1][j];
                 }
-                long path1,path2;//上面的方格和左面的方格到本方格的路径数
-                if(i==0)//第一行
-                    path1=0;//上面的方格路径为0
-                else
-                    path1=dp[i-1][j];//否则为上面的方格路径数目
-                if(j==0)//第一列
-                    path2=0;//左面的方格数目为0
-                else
-                    path2=dp[i][j-1];//否则为左面的方格路径数目
-                dp[i][j]=path1+path2;//当前方格的路径数目
             }
-        return dp[m-1][n-1];
-       
+        return dp[m-1][n-1];//从grid[0][0]到grid[m-1][n-1]的最大路径数
     }
 };
