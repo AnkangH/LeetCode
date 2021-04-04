@@ -44,3 +44,48 @@ public:
         return resHead->next;
     }
 };
+
+
+//2021.4.4复习
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        // 链表头和遍历用的链表头
+        ListNode* result = new ListNode();
+        ListNode* cur_head = result;
+        int flag = 0;
+        // 遍历直到两个链表都到链表尾
+        while(l1 || l2){
+            
+            if(l1) {
+                flag+=l1->val;
+                l1=l1->next;
+            }
+            if(l2) {
+                flag += l2->val;
+                l2=l2->next;
+            }
+            
+            // 更新当前节点值
+            cur_head->val = flag % 10;
+            flag /= 10;
+            
+            //仍需计算下一个节点值
+            if(l1 || l2 || flag){
+                cur_head->next = new ListNode(flag);
+                cur_head = cur_head->next;
+            }
+        }
+        return result;
+    }
+};
