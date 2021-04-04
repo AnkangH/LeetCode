@@ -89,3 +89,8 @@ public:
         return result;
     }
 };
+
+/*
+    1.链表用new的方式返回指针 否则空链表为nullptr无法赋值
+    2.链表头和遍历头 因为使用指针所以只能修改指针的属性而无法修改指针本身 cur_head = nullptr并不会生效
+*/
