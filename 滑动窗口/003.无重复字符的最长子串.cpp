@@ -88,3 +88,48 @@ public:
         return res;
     }
 };
+
+
+//2021.4.5
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        if(s.size()==0)
+            return 0;
+        
+        int left=0;
+        int result = 1;
+        // 记录每个子串中不重复字符串的长度
+        set<char> exists;
+        exists.insert(s[left]);
+        for(int right=1;right<s.size();right++){
+            //该字符串不重复 放入哈希表
+            if(exists.find(s[right])==exists.end()){
+                exists.insert(s[right]);
+            }
+            // 该字符重复 遍历子串 将重复字符之前的所有字符从哈希表中删除
+            // 将子串中重负字符的下一个作为左指针的新起点
+            else{
+                while(left<right){
+                    if(s[left]!=s[right]){
+                        exists.erase(s[left]);
+                    }
+                    else{
+                        left+=1;
+                        break;
+                    }
+                    left+=1;
+                }
+            }
+            //判断最大子串的长度 注意完全无重复的情况
+            if(exists.size()>result){
+                result=exists.size();
+            }
+        }
+        return result;
+    }
+};
+
+/*
+注意erase的多态 根据传入参数类型不同 可删除指定值或者迭代器指向的对象
+*/
