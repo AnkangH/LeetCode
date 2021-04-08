@@ -46,3 +46,29 @@ public:
         return res;
     }
 };
+
+
+
+//2021.4.8
+class Solution {
+public:
+    int climbStairs(int n) {
+        //dp[i]=dp[i-1]+dp[i-2]
+        //由于递推只使用三个变量 因此空间复杂度可以为o(1)
+        int dp1=1,dp2=2,dp=0;
+        //初始值 直接返回
+        if(n==1){
+            return dp1;
+        }
+        else if(n==2){
+            return dp2;
+        }
+        // n从3 开始递推
+        for(int i=3;i<=n;i++){
+            dp=dp1+dp2;
+            dp1=dp2;
+            dp2=dp;
+        }
+        return dp;
+    }
+};
