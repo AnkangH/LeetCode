@@ -29,3 +29,28 @@ public:
         return res;
     }
 };
+
+
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> dp(n, 1);
+        int result=1;
+        //dp[i] 以第i个元素作为结尾的最长递增子序列的长度
+        // dp[i]= max(dp[j]+1) 0<=j<i
+        // 对于第i个元素 遍历其之前的每个元素s[j] 求以s[j]作为结尾的最长递增子序列的长度
+        // 若s[i] > s[j] 则长度可+1
+        // 否则s[i]的最长递增序列长度仍为1 不需处理
+        // 因为不确定前j个元素中 以哪个元素作为序列尾的递增序列最长 所以要遍历前j个元素求max
+        for(int i=1;i<n;i++){
+            for(int j=0;j<i;j++){
+                if(nums[i]>nums[j]){
+                    dp[i]=max(dp[i], dp[j]+1);
+                }
+            }
+            result=max(result, dp[i]);
+        }
+        return result;
+    }
+};
