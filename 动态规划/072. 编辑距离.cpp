@@ -56,3 +56,47 @@ public:
         return dp[m][n];
     }
 };
+
+
+
+//2021.4.11
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        if(word1.size()==0){
+            return word2.size();
+        }
+        if(word2.size()==0){
+            return word1.size();
+        }
+        //dp[i][j]为s1(0,i)->s2(0,j)所需的最小变换次数
+        //dp[i][j]=     min( dp[i-1][j] i-1->j（i位置的字符多余）删除word1[i]即可
+        //                   dp[i][j-1] i->j-1 （说明i字符不够，在i位置后面增加一个字符串）令word1[i+1]=word2[j]
+        //                   dp[i-1][j-1] i-1能到j-1 如果word1[i]!=word2[j] 修改word1[i]==word2[j]即可 否则不需改动
+        int m=word1.size();
+        int n=word2.size();
+        //word1前i个变为空字符串 需要变i次 指删除i次word1字符操作
+        vector<vector<int>> dp(m+1,vector<int>(n+1,0));
+        for(int i=0;i<=m;i++){
+            dp[i][0]=i;
+        }
+        //word2前i个字符变为空字符 需要变i次 指删除i个word2字符操作 等价于word1增加i个字符
+        for(int i=0;i<=n;i++){
+            dp[0][i]=i;
+        }
+        for(int i=1;i<=m;i++)
+            for(int j=1;j<=n;j++){
+                if(word1[i-1]==word2[j-1]){
+                    dp[i][j]=min(dp[i-1][j], dp[i][j-1]) + 1;
+                    dp[i][j]=min(dp[i][j], dp[i-1][j-1]);
+                    // std::cout<<"eq,i="<<i<<",j="<<j<<",dp[i][j]="<<dp[i][j]<<std::endl;
+                }
+                else{
+                    dp[i][j]=min(dp[i-1][j],dp[i][j-1]);
+                    dp[i][j]=min(dp[i][j],dp[i-1][j-1]) + 1;
+                    // std::cout<<"neq,i="<<i<<",j="<<j<<",dp[i][j]="<<dp[i][j]<<std::endl;
+                }
+            }
+        return dp[m][n];
+    }
+};
