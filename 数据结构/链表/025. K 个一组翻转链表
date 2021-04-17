@@ -1,0 +1,74 @@
+/*
+给你一个链表，每 k 个节点一组进行翻转，请你返回翻转后的链表。
+
+k 是一个正整数，它的值小于或等于链表的长度。
+
+如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。
+
+进阶：
+
+你可以设计一个只使用常数额外空间的算法来解决此问题吗？
+你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/reverse-nodes-in-k-group
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+*/
+
+
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        // k个一组遍历原链表  每个链表片段头节点为cur_head 尾节点为cur
+        ListNode* cur=head;
+        ListNode* cur_head=head;
+        //为了防止处理小于k的情况 先造一个res_head->res_tail->nullptr的链表
+        ListNode* res_head=new ListNode(0);
+        ListNode* res_tail=new ListNode(0);
+        res_head->next=res_tail;
+        int cur_len = 1;
+        while(cur!=nullptr){
+            //当前链表片段长度达到k 截断 处理一次全链表反转
+            if(cur_len==k){
+                // 需要提前保存cur->next 用于遍历原链表
+                // 处理一下最后一个片段 且满足长度为k时的边界条件
+                ListNode* nxt=nullptr;
+                if(cur->next!=nullptr){
+                    nxt=cur->next;
+                    cur->next=nullptr;  //截断该链表片段 长度为k
+                }
+                //反转这k个链表片段
+                auto res=re_list(cur_head);
+                ListNode* frag_head=res.first;
+                ListNode* frag_tail=res.second;
+                //与上次反转的链表片段连接
+                res_tail->next=frag_head;
+                res_tail=frag_tail;
+                // 继续遍历 重置当前链表片段长度 当前链表头 尾节点
+                cur=nxt;
+                cur_head=nxt;
+                cur_len=1;
+                continue;
+            }
+            cur=cur->next;
+            cur_len+=1;
+        }
+        // 处理最后一个片段 长度不为k的情况
+        // 返回正确的链表头
+        // res_head -> res_tail -> true_head -> ... -> nullptr
+        res_tail->next=cur_head;
+        return res_head->next->next;
+    }
+    // 反转整个链表
+    pair<ListNode*, ListNode*> re_list(ListNode* head){
+        ListNode* cur=head;
+        ListNode* pre = nullptr;
+        while(cur!=nullptr){
+            ListNode* nxt=cur->next;
+            cur->next=pre;
+            pre=cur;
+            cur=nxt;
+        }
+        return pair<ListNode*, ListNode*>(pre, head);
+    }
+};
