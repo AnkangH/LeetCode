@@ -157,3 +157,52 @@ public:
     }
 };
 
+//2021.4.17 同上
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        // 排序后双指针查找和为nums[i]
+        // 排序后 相同数值跳过 且查找范围为(i+1,n) 即每个数字只找右侧（比自己大的数值）
+        // 从而去重 以及减少查找次数
+        sort(nums.begin(), nums.end());
+        int n=nums.size();
+        vector<vector<int>> res;
+        for(int i=0;i<n;i++){
+            if(i>0 && nums[i]==nums[i-1]){
+                continue;
+            }
+            int target = -nums[i];
+            int left=i+1;
+            int right=n-1;
+            while(left<right){
+                //找到一组答案
+                if(nums[left]+nums[right]==target){
+                    res.push_back(vector<int>{nums[i], nums[left], nums[right]});
+                    // left向右找第一个不等于当前nums[left]的值
+                    while(left<right){
+                        left+=1;
+                        if(nums[left]!=nums[left-1]){
+                            break;
+                        }
+                    }
+                    // right向左找 第一个不等于当前nums[right]的值
+                    while(left<right){
+                        right-=1;
+                        if(nums[right]!=nums[right+1]){
+                            break;
+                        }
+                    }
+                }
+                // 当前和小于目标值 左指针右移 增大和
+                else if(nums[left]+nums[right]<target){
+                    left+=1;
+                }
+                // 当前和大于目标值 右指针左移 减小和
+                else{
+                    right-=1;
+                }
+            }
+        }
+        return res;
+    }
+};
